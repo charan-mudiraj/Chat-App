@@ -1,0 +1,158 @@
+import { useEffect, useRef, useState } from "react";
+import { Message, Queue, SideScreenSchema, User } from "../Components/types";
+import {
+  collection,
+  query,
+  orderBy,
+  onSnapshot,
+  setDoc,
+  doc,
+  updateDoc,
+  getDoc,
+} from "firebase/firestore";
+import { getUniqueID } from "../Components/Functions";
+import { DB } from "../firestore/firestore";
+import MessageBox from "../Components/Message";
+import TopProfileView from "../Components/TopProfileView";
+import BottomMessagingBar from "../Components/BottomMessagingBar";
+import { MessageStatus } from "../Components/types";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { chatMessagesAtom, sideScreenAtom } from "../atoms/atom";
+
+const queueMessages = new Queue();
+
+export default function Chat({ classes }: any) {
+  const [list, setList] = useRecoilState<Message[]>(chatMessagesAtom);
+  const currentSideScreen = useRecoilValue<SideScreenSchema>(sideScreenAtom);
+  const [currentUser, setCurrentUser] = useState<User>();
+  const messagesListRef = useRef(null);
+  const scrollListToBottom = () => {
+    if (
+      list.length != 0 &&
+      messagesListRef.current.scrollHeight >
+        messagesListRef.current.clientHeight
+    ) {
+      messagesListRef.current.scrollTop = messagesListRef.current.scrollHeight;
+    }
+  };
+  scrollListToBottom();
+  // for latest snapshots. i.e., fetching new/latest messages from DB
+  useEffect(() => {
+    getCurrentUser();
+    const messagesRef = collection(DB, currentSideScreen.listId);
+    const q = query(messagesRef, orderBy("id"));
+    const unsub = onSnapshot(q, (snapshot) => {
+      const newMessagesList: Message[] = [];
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === "added") {
+          newMessagesList.push(change.doc.data() as Message);
+        }
+        // also do for "updated"
+      });
+      let currentList: Message[];
+      setList((l) => {
+        currentList = JSON.parse(JSON.stringify(l));
+        return [...l];
+      });
+      newMessagesList.forEach((newMsg) => {
+        let index = currentList.findIndex((m) => m.id == newMsg.id);
+        if (index >= 0) {
+          // already present in the current list, so just update the status to SENT
+          currentList[index].msgStatus = MessageStatus.SENT;
+          setList(currentList);
+          const docRef = doc(
+            DB,
+            currentSideScreen.listId,
+            newMsg.id.toString()
+          );
+          updateDoc(docRef, {
+            msgStatus: MessageStatus.SENT,
+          });
+        } else {
+          // new message from the opposite person, so push to current list and update the status to SEEN
+          // cuz RECEIVED is when the user is outside the Chat Screen
+          setList((l) => [...l, newMsg]);
+          if (
+            newMsg.senderId != window.localStorage.getItem("chatapp-user-id")
+          ) {
+            const docRef = doc(
+              DB,
+              currentSideScreen.listId,
+              newMsg.id.toString()
+            );
+            updateDoc(docRef, {
+              msgStatus: MessageStatus.SEEN,
+            });
+          }
+        }
+      });
+    });
+
+    return () => {
+      unsub();
+    };
+  }, [currentSideScreen]);
+
+  const getCurrentUser = async () => {
+    const docRef = doc(
+      DB,
+      "users",
+      window.localStorage.getItem("chatapp-user-id") as string
+    );
+    const snapshot = await getDoc(docRef);
+    const user = snapshot.data() as User;
+    setCurrentUser(user);
+  };
+
+  const sendMsg = async (msg: string) => {
+    const id = getUniqueID();
+    const newMsg: Message = {
+      id: Number(id),
+      msg: msg,
+      msgStatus: MessageStatus.WAITING,
+      senderId: window.localStorage.getItem("chatapp-user-id") as string,
+      senderName: currentUser.name,
+      senderProfileImg: currentUser.profileImgUrl,
+    };
+    queueMessages.enqueue(newMsg);
+    setList((l) => [...l, newMsg]);
+  };
+
+  useEffect(() => {
+    const DBupdate = async () => {
+      const msg = queueMessages.dequeue();
+      if (msg && msg != -1) {
+        await setDoc(doc(DB, currentSideScreen.listId, msg.id.toString()), msg);
+      }
+      if (!queueMessages.isEmpty()) {
+        DBupdate();
+      }
+    };
+    DBupdate();
+  }, [list]);
+
+  return (
+    <div className={"flex flex-col h-screen w-screen" + " " + classes}>
+      <TopProfileView
+        isGroup={currentSideScreen.isGroup}
+        name={currentSideScreen.name}
+      />
+      <div className="flex flex-col overflow-auto h-full" ref={messagesListRef}>
+        {list.map((m, i) => (
+          <MessageBox
+            key={i}
+            msgStatus={m.msgStatus}
+            isSender={
+              m.senderId == window.localStorage.getItem("chatapp-user-id")
+            }
+            isGroup={currentSideScreen.isGroup}
+            msgText={m.msg}
+            senderName={m.senderName}
+            imageUrl={m.senderProfileImg}
+          />
+        ))}
+      </div>
+      <BottomMessagingBar sendMsg={sendMsg} />
+    </div>
+  );
+}
