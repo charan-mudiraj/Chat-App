@@ -76,6 +76,7 @@ export default function AddUser() {
         name: username,
         status: status,
         profileImgUrl: photoUrl,
+        connections: [],
       };
       // upload the user data
       await setDoc(newDocRef, newUser);

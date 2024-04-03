@@ -13,6 +13,7 @@ export const sideScreenAtom = atom<SideScreenSchema>({
     isGroup: false,
     imageUrl: "",
     name: "",
+    userId: "",
   },
 });
 export const chatMessagesAtom = atom<Message[]>({

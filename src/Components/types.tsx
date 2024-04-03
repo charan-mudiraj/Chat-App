@@ -5,6 +5,7 @@ export interface Message {
   senderId: string;
   senderName: string;
   senderProfileImg: string;
+  time: string;
 }
 export class Queue {
   private list: Message[];
@@ -33,17 +34,24 @@ export enum MessageStatus {
   RECEIVED = "RECEIVED",
   SEEN = "SEEN",
 }
+export interface UserConnection {
+  userId: string;
+  chatId: string;
+  lastMessage: string;
+  lastUpdated: string;
+}
 export interface User {
   id: string;
   name: string;
   status: string;
   profileImgUrl: string;
+  connections: UserConnection[];
 }
 export interface Group {
   id: string;
   name: string;
   groupImgUrl: string;
-  lastUpdated: number;
+  lastUpdated: string;
   members: string[];
   lastMessage: string;
 }
@@ -52,4 +60,5 @@ export interface SideScreenSchema {
   isGroup: boolean;
   imageUrl: string;
   name: string;
+  userId?: string;
 }

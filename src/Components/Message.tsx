@@ -34,12 +34,11 @@ export default function Message({
   msgText,
   senderName,
   imageUrl,
+  time,
 }: any) {
   const bgColor = isSender ? "bg-chat" : "bg-secondary";
   const justify = isSender ? "justify-end" : "justify-start";
   const roundedTop = isSender ? "rounded-tl-xl" : "rounded-tr-xl";
-  console.log(senderName);
-  console.log(imageUrl);
   return (
     <div className={"p-2 flex" + " " + justify}>
       {isGroup && !isSender && <ProfileIcon imageUrl={imageUrl} />}
@@ -51,9 +50,9 @@ export default function Message({
         {isGroup && !isSender && (
           <p className="text-xs text-pink-400">{senderName}</p>
         )}
-        <p>{msgText}</p>
-        <div className="flex justify-end items-center">
-          <p className="text-sm text-zinc-300 font-thin pr-1">time</p>
+        <p className="text-md">{msgText}</p>
+        <div className="flex justify-end items-center text-xs">
+          <p className="text-xs text-zinc-300 font-thin pr-1">{time}</p>
           {(msgStatus == MessageStatus.WAITING && <ClockIcon />) ||
             (msgStatus == MessageStatus.SENT && <OneTickIcon />) ||
             (msgStatus == MessageStatus.RECEIVED && <TwoTickIcon />) ||

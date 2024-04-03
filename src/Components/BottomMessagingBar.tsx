@@ -27,12 +27,21 @@ export default function BottomMessagingBar({ sendMsg }: any) {
         onInput={(e) => {
           setMsg(e.target.value);
         }}
+        onKeyDown={(e) => {
+          if (e.key == "Enter") {
+            const sendBtn = document.getElementById("msg-send-btn");
+            sendBtn?.click();
+          }
+        }}
       />
       <button
         className="p-4 rounded-full bg-dark hover:bg-secondary disabled:opacity-50"
+        id="msg-send-btn"
         onClick={() => {
-          sendMsg(msg);
-          setMsg("");
+          if (msg.trim(" ")) {
+            sendMsg(msg);
+            setMsg("");
+          }
         }}
       >
         <PaperAirplaneIcon className="w-6 h-6" />

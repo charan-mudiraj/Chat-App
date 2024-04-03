@@ -1,5 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { Message, Queue, SideScreenSchema, User } from "../Components/types";
+import {
+  Message,
+  Queue,
+  SideScreenSchema,
+  User,
+  UserConnection,
+} from "../Components/types";
 import {
   collection,
   query,
@@ -10,7 +16,7 @@ import {
   updateDoc,
   getDoc,
 } from "firebase/firestore";
-import { getUniqueID } from "../Components/Functions";
+import { getCurrentTime, getUniqueID } from "../Components/Functions";
 import { DB } from "../firestore/firestore";
 import MessageBox from "../Components/Message";
 import TopProfileView from "../Components/TopProfileView";
@@ -49,6 +55,64 @@ export default function Chat({ classes }: any) {
         }
         // also do for "updated"
       });
+      // Update last msg and last updated in group doc
+      if (currentSideScreen.isGroup) {
+        getDoc(doc(DB, "groups", currentSideScreen.listId)).then((snapshot) => {
+          if (
+            snapshot.data().lastMessage !=
+            newMessagesList[newMessagesList.length - 1].msg
+          ) {
+            updateDoc(doc(DB, "groups", currentSideScreen.listId), {
+              lastMessage: newMessagesList[newMessagesList.length - 1].msg,
+              lastUpdated: getUniqueID(),
+            });
+          }
+        });
+      } else {
+        const currUserRef = doc(
+          DB,
+          "users",
+          window.localStorage.getItem("chatapp-user-id") as string
+        );
+        getDoc(currUserRef).then((snapshot) => {
+          const connections: UserConnection[] = snapshot.data().connections;
+          const index = connections.findIndex(
+            (c) => c.userId == currentSideScreen.userId
+          );
+          if (
+            newMessagesList.length >= 0 &&
+            connections[index].lastMessage !=
+              newMessagesList[newMessagesList.length - 1].msg
+          ) {
+            connections[index].lastMessage =
+              newMessagesList[newMessagesList.length - 1].msg;
+            connections[index].lastUpdated = getUniqueID();
+            updateDoc(currUserRef, {
+              connections: connections,
+            });
+          }
+        });
+        const userRef = doc(DB, "users", currentSideScreen.userId as string);
+        getDoc(userRef).then((snapshot) => {
+          const connections: UserConnection[] = snapshot.data().connections;
+          const index = connections.findIndex(
+            (c) => c.userId == window.localStorage.getItem("chatapp-user-id")
+          );
+          if (
+            newMessagesList.length >= 0 &&
+            connections[index].lastMessage !=
+              newMessagesList[newMessagesList.length - 1].msg
+          ) {
+            connections[index].lastMessage =
+              newMessagesList[newMessagesList.length - 1].msg;
+            console.log(newMessagesList[newMessagesList.length - 1].msg);
+            connections[index].lastUpdated = getUniqueID();
+            updateDoc(userRef, {
+              connections: connections,
+            });
+          }
+        });
+      }
       let currentList: Message[];
       setList((l) => {
         currentList = JSON.parse(JSON.stringify(l));
@@ -113,6 +177,7 @@ export default function Chat({ classes }: any) {
       senderId: window.localStorage.getItem("chatapp-user-id") as string,
       senderName: currentUser.name,
       senderProfileImg: currentUser.profileImgUrl,
+      time: getCurrentTime(),
     };
     queueMessages.enqueue(newMsg);
     setList((l) => [...l, newMsg]);
@@ -136,6 +201,7 @@ export default function Chat({ classes }: any) {
       <TopProfileView
         isGroup={currentSideScreen.isGroup}
         name={currentSideScreen.name}
+        imageUrl={currentSideScreen.imageUrl}
       />
       <div className="flex flex-col overflow-auto h-full" ref={messagesListRef}>
         {list.map((m, i) => (
@@ -149,6 +215,7 @@ export default function Chat({ classes }: any) {
             msgText={m.msg}
             senderName={m.senderName}
             imageUrl={m.senderProfileImg}
+            time={m.time}
           />
         ))}
       </div>

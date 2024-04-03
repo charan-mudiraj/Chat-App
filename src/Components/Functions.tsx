@@ -15,3 +15,13 @@ export const getUniqueID = () => {
 
   return id;
 };
+
+export const getCurrentTime = () => {
+  const date = new Date();
+  // 07:57 PM
+  const period = date.getHours() < 12 ? "AM" : "PM";
+  const hours = date.getHours() % 12 || 12;
+  const time =
+    hours + ":" + date.getMinutes().toString().padStart(2, "0") + " " + period;
+  return time;
+};
