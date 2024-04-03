@@ -1,4 +1,3 @@
-import reachedIcon from "../assets/reached.png";
 import seenIcon from "../assets/seen.png";
 import sentIcon from "../assets/sent.png";
 import clockIcon from "../assets/clock.png";
@@ -9,9 +8,6 @@ function ClockIcon() {
 }
 function OneTickIcon() {
   return <img src={sentIcon} className="h-2.5" />;
-}
-function TwoTickIcon() {
-  return <img src={reachedIcon} className="h-2.5" />;
 }
 function TwoTickSeenIcon() {
   return <img src={seenIcon} className="h-2.5" />;
@@ -24,6 +20,15 @@ function ProfileIcon({ imageUrl }: any) {
       ) : (
         <UserCircleIcon className="h-10 pr-1" />
       )}
+    </>
+  );
+}
+function StatusIndicator({ status }: any) {
+  return (
+    <>
+      {(status == MessageStatus.WAITING && <ClockIcon />) ||
+        (status == MessageStatus.SENT && <OneTickIcon />) ||
+        (status == MessageStatus.SEEN && <TwoTickSeenIcon />)}
     </>
   );
 }
@@ -53,10 +58,7 @@ export default function Message({
         <p className="text-md">{msgText}</p>
         <div className="flex justify-end items-center text-xs">
           <p className="text-xs text-zinc-300 font-thin pr-1">{time}</p>
-          {(msgStatus == MessageStatus.WAITING && <ClockIcon />) ||
-            (msgStatus == MessageStatus.SENT && <OneTickIcon />) ||
-            (msgStatus == MessageStatus.RECEIVED && <TwoTickIcon />) ||
-            (msgStatus == MessageStatus.SEEN && <TwoTickSeenIcon />)}
+          {isSender && <StatusIndicator status={msgStatus} />}
         </div>
       </div>
     </div>

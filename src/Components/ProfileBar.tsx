@@ -1,10 +1,11 @@
 import { UserGroupIcon, UserCircleIcon } from "@heroicons/react/20/solid";
 import { useSetRecoilState } from "recoil";
 import { chatMessagesAtom, sideScreenAtom } from "../atoms/atom";
-import { UserConnection } from "./types";
+import { GroupMember, MessageStatus, UserConnection } from "./types";
 import { getUniqueID } from "./Functions";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore";
 import { DB } from "../firestore/firestore";
+import { useEffect, useState } from "react";
 
 export default function ProfileBar({
   isGroup,
@@ -13,6 +14,7 @@ export default function ProfileBar({
   imageUrl,
   id,
   chatId,
+  lastMsgStatus,
 }: any) {
   const setCurrentSideScreen = useSetRecoilState(sideScreenAtom);
   const setChatMessagesList = useSetRecoilState(chatMessagesAtom);
@@ -63,7 +65,7 @@ export default function ProfileBar({
   };
   return (
     <div
-      className="flex gap-3 justify-left items-center hover:bg-secondary py-1.5 hover:cursor-pointer pl-5 m-3 rounded-xl"
+      className="flex gap-3 justify-left items-center hover:bg-secondary py-1.5 hover:cursor-pointer pl-5 m-3 rounded-xl relative"
       onClick={openChat}
     >
       {imageUrl ? (
@@ -77,6 +79,9 @@ export default function ProfileBar({
         <p className="text-lg font-bold text-zinc-200">{name}</p>
         <p className="text-sm text-zinc-400">{lastMsg}</p>
       </div>
+      {lastMsgStatus == MessageStatus.SENT && (
+        <div className="h-3 w-3 bg-primary rounded-full absolute right-4"></div>
+      )}
     </div>
   );
 }

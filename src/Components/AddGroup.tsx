@@ -21,14 +21,14 @@ import {
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { DB, DBStorage } from "../firestore/firestore";
-import { Group, User } from "./types";
+import { Group, GroupMember, MessageStatus, User } from "./types";
 import { getUniqueID } from "./Functions";
 
 export default function AddGroup({ onClose }: any) {
   const [photo, setPhoto] = useState<File>();
   const [groupname, setGroupname] = useState("");
   const setIsLoading = useSetRecoilState(globalLoaderAtom);
-  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<GroupMember[]>([]);
   const [usersList, setUsersList] = useState<User[]>([]);
   const [isDropDownActive, toggleDropDown] = useState(false);
 
@@ -79,9 +79,12 @@ export default function AddGroup({ onClose }: any) {
         groupImgUrl: photoUrl,
         lastUpdated: getUniqueID(),
         members: [
-          window.localStorage.getItem("chatapp-user-id"),
+          {
+            userId: window.localStorage.getItem("chatapp-user-id") as string,
+            lastMsgStatus: MessageStatus.SEEN,
+          },
           ...selectedUsers,
-        ] as string[],
+        ],
         lastMessage: "",
       };
       // upload the group data
@@ -98,10 +101,14 @@ export default function AddGroup({ onClose }: any) {
 
   const handleCheckboxChange = (userId: string) => {
     let updatedSelection = [...selectedUsers];
-    if (updatedSelection.includes(userId)) {
-      updatedSelection = updatedSelection.filter((value) => value !== userId);
+    const index = updatedSelection.findIndex((s) => s.userId == userId);
+    if (index >= 0) {
+      updatedSelection.splice(index, 1);
     } else {
-      updatedSelection.push(userId);
+      updatedSelection.push({
+        userId: userId,
+        lastMsgStatus: MessageStatus.SEEN,
+      });
     }
     setSelectedUsers(updatedSelection);
   };
@@ -163,7 +170,9 @@ export default function AddGroup({ onClose }: any) {
                     <input
                       type="checkbox"
                       value={user.id}
-                      checked={selectedUsers.includes(user.id)}
+                      checked={
+                        selectedUsers.findIndex((u) => u.userId == user.id) >= 0
+                      }
                       onChange={() => handleCheckboxChange(user.id)}
                       className="cursor-pointer ml-1 mr-2"
                     />

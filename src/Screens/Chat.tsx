@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import {
+  GroupMember,
   Message,
   Queue,
   SideScreenSchema,
@@ -50,9 +51,9 @@ export default function Chat({ classes }: any) {
     const unsub = onSnapshot(q, (snapshot) => {
       const newMessagesList: Message[] = [];
       snapshot.docChanges().forEach((change) => {
-        if (change.type === "added") {
-          newMessagesList.push(change.doc.data() as Message);
-        }
+        // if (change.type === "added") {
+        newMessagesList.push(change.doc.data() as Message);
+        // }
         // also do for "updated"
       });
       // Update last msg and last updated in group doc
@@ -80,7 +81,7 @@ export default function Chat({ classes }: any) {
             (c) => c.userId == currentSideScreen.userId
           );
           if (
-            newMessagesList.length >= 0 &&
+            newMessagesList.length > 0 &&
             connections[index].lastMessage !=
               newMessagesList[newMessagesList.length - 1].msg
           ) {
@@ -99,13 +100,12 @@ export default function Chat({ classes }: any) {
             (c) => c.userId == window.localStorage.getItem("chatapp-user-id")
           );
           if (
-            newMessagesList.length >= 0 &&
+            newMessagesList.length > 0 &&
             connections[index].lastMessage !=
               newMessagesList[newMessagesList.length - 1].msg
           ) {
             connections[index].lastMessage =
               newMessagesList[newMessagesList.length - 1].msg;
-            console.log(newMessagesList[newMessagesList.length - 1].msg);
             connections[index].lastUpdated = getUniqueID();
             updateDoc(userRef, {
               connections: connections,
@@ -122,16 +122,21 @@ export default function Chat({ classes }: any) {
         let index = currentList.findIndex((m) => m.id == newMsg.id);
         if (index >= 0) {
           // already present in the current list, so just update the status to SENT
-          currentList[index].msgStatus = MessageStatus.SENT;
-          setList(currentList);
-          const docRef = doc(
-            DB,
-            currentSideScreen.listId,
-            newMsg.id.toString()
-          );
-          updateDoc(docRef, {
-            msgStatus: MessageStatus.SENT,
-          });
+          if (newMsg.msgStatus == MessageStatus.WAITING) {
+            currentList[index].msgStatus = MessageStatus.SENT;
+            setList(currentList);
+            const docRef = doc(
+              DB,
+              currentSideScreen.listId,
+              newMsg.id.toString()
+            );
+            updateDoc(docRef, {
+              msgStatus: MessageStatus.SENT,
+            });
+          } else if (newMsg.msgStatus == MessageStatus.SEEN) {
+            currentList[index].msgStatus = MessageStatus.SEEN;
+            setList(currentList);
+          }
         } else {
           // new message from the opposite person, so push to current list and update the status to SEEN
           // cuz RECEIVED is when the user is outside the Chat Screen
@@ -139,14 +144,41 @@ export default function Chat({ classes }: any) {
           if (
             newMsg.senderId != window.localStorage.getItem("chatapp-user-id")
           ) {
-            const docRef = doc(
-              DB,
-              currentSideScreen.listId,
-              newMsg.id.toString()
-            );
-            updateDoc(docRef, {
-              msgStatus: MessageStatus.SEEN,
-            });
+            if (!currentSideScreen.isGroup) {
+              const docRef = doc(
+                DB,
+                currentSideScreen.listId,
+                newMsg.id.toString()
+              );
+              updateDoc(docRef, {
+                msgStatus: MessageStatus.SEEN,
+              });
+            } else {
+              const docRef = doc(DB, "groups", currentSideScreen.listId);
+              getDoc(docRef).then((snapshot) => {
+                const members: GroupMember[] = snapshot.data().members;
+                const index = members.findIndex(
+                  (m) =>
+                    m.userId ==
+                    (window.localStorage.getItem("chatapp-user-id") as string)
+                );
+                members[index].lastMsgStatus = MessageStatus.SEEN;
+                updateDoc(docRef, {
+                  members: members,
+                });
+                const index_2 = members.findIndex(
+                  (m) => m.lastMsgStatus != MessageStatus.SEEN
+                );
+                if (index_2 == -1) {
+                  updateDoc(
+                    doc(DB, currentSideScreen.listId, newMsg.id.toString()),
+                    {
+                      msgStatus: MessageStatus.SEEN,
+                    }
+                  );
+                }
+              });
+            }
           }
         }
       });
@@ -188,6 +220,24 @@ export default function Chat({ classes }: any) {
       const msg = queueMessages.dequeue();
       if (msg && msg != -1) {
         await setDoc(doc(DB, currentSideScreen.listId, msg.id.toString()), msg);
+        if (currentSideScreen.isGroup) {
+          getDoc(doc(DB, "groups", currentSideScreen.listId)).then(
+            (snapshot) => {
+              const members: GroupMember[] = snapshot.data().members;
+              members.forEach((m) => {
+                if (
+                  m.userId !=
+                  (window.localStorage.getItem("chatapp-user-id") as string)
+                ) {
+                  m.lastMsgStatus = MessageStatus.SENT;
+                }
+              });
+              updateDoc(doc(DB, "groups", currentSideScreen.listId), {
+                members: members,
+              });
+            }
+          );
+        }
       }
       if (!queueMessages.isEmpty()) {
         DBupdate();
@@ -195,7 +245,6 @@ export default function Chat({ classes }: any) {
     };
     DBupdate();
   }, [list]);
-
   return (
     <div className={"flex flex-col h-screen w-screen" + " " + classes}>
       <TopProfileView

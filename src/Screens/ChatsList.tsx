@@ -15,7 +15,6 @@ import {
 } from "firebase/firestore";
 import { DB } from "../firestore/firestore";
 import { Group, User, UserConnection } from "../Components/types";
-import { getUniqueID } from "../Components/Functions";
 
 export default function ChatsList({ classes }: any) {
   const [isAddGroupClicked, addGroupToggle] = useState(false);
@@ -29,7 +28,10 @@ export default function ChatsList({ classes }: any) {
     const unsubGroups = onSnapshot(q1, (snapshot) => {
       const chats: Group[] = [];
       snapshot.docs.forEach((doc) => {
-        if (currUser != null && doc.data().members.includes(currUser)) {
+        if (
+          currUser != null &&
+          doc.data().members.findIndex((m) => m.userId == currUser) >= 0
+        ) {
           chats.push(doc.data() as Group);
           chats.reduce;
         }
@@ -70,7 +72,7 @@ export default function ChatsList({ classes }: any) {
       unsubGroups();
       unsubChats();
     };
-  }, [users]);
+  }, []);
   return (
     <div className={"flex flex-col h-screen" + " " + classes}>
       {isAddGroupClicked && (
@@ -102,6 +104,15 @@ export default function ChatsList({ classes }: any) {
             imageUrl={g.groupImgUrl}
             name={g.name}
             lastMsg={g.lastMessage}
+            lastMsgStatus={
+              g.members[
+                g.members.findIndex(
+                  (m) =>
+                    m.userId ==
+                    (window.localStorage.getItem("chatapp-user-id") as string)
+                )
+              ].lastMsgStatus
+            }
           />
         ))}
         {users.map((u, i) => {
@@ -118,6 +129,7 @@ export default function ChatsList({ classes }: any) {
                 imageUrl={u.profileImgUrl}
                 name={u.name}
                 lastMsg={currentUser.connections[index].lastMessage}
+                lastMsgId={""}
               />
             );
           }
@@ -130,6 +142,7 @@ export default function ChatsList({ classes }: any) {
               imageUrl={u.profileImgUrl}
               name={u.name}
               lastMsg={""}
+              lastMsgId={""}
             />
           );
         })}

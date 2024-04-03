@@ -31,7 +31,6 @@ export class Queue {
 export enum MessageStatus {
   WAITING = "WAITING",
   SENT = "SENT",
-  RECEIVED = "RECEIVED",
   SEEN = "SEEN",
 }
 export interface UserConnection {
@@ -47,12 +46,16 @@ export interface User {
   profileImgUrl: string;
   connections: UserConnection[];
 }
+export interface GroupMember {
+  userId: string;
+  lastMsgStatus: MessageStatus;
+}
 export interface Group {
   id: string;
   name: string;
   groupImgUrl: string;
   lastUpdated: string;
-  members: string[];
+  members: GroupMember[];
   lastMessage: string;
 }
 export interface SideScreenSchema {
