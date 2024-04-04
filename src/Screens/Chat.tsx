@@ -25,6 +25,7 @@ import BottomMessagingBar from "../Components/BottomMessagingBar";
 import { MessageStatus } from "../Components/types";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { chatMessagesAtom, sideScreenAtom } from "../atoms/atom";
+import Loader from "../Components/Loader";
 
 const queueMessages = new Queue();
 
@@ -33,6 +34,7 @@ export default function Chat({ classes }: any) {
   const currentSideScreen = useRecoilValue<SideScreenSchema>(sideScreenAtom);
   const [currentUser, setCurrentUser] = useState<User>();
   const messagesListRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
   const scrollListToBottom = () => {
     if (
       list.length != 0 &&
@@ -42,9 +44,9 @@ export default function Chat({ classes }: any) {
       messagesListRef.current.scrollTop = messagesListRef.current.scrollHeight;
     }
   };
-  scrollListToBottom();
   // for latest snapshots. i.e., fetching new/latest messages from DB
   useEffect(() => {
+    setIsLoading(true);
     getCurrentUser();
     const messagesRef = collection(DB, currentSideScreen.listId);
     const q = query(messagesRef, orderBy("id"));
@@ -66,6 +68,7 @@ export default function Chat({ classes }: any) {
             updateDoc(doc(DB, "groups", currentSideScreen.listId), {
               lastMessage: newMessagesList[newMessagesList.length - 1].msg,
               lastUpdated: getUniqueID(),
+              lastUpdatedTime: getCurrentTime(),
             });
           }
         });
@@ -88,6 +91,8 @@ export default function Chat({ classes }: any) {
             connections[index].lastMessage =
               newMessagesList[newMessagesList.length - 1].msg;
             connections[index].lastUpdated = getUniqueID();
+            connections[index].lastMsgStatus = MessageStatus.SEEN;
+            connections[index].lastUpdatedTime = getCurrentTime();
             updateDoc(currUserRef, {
               connections: connections,
             });
@@ -97,7 +102,9 @@ export default function Chat({ classes }: any) {
         getDoc(userRef).then((snapshot) => {
           const connections: UserConnection[] = snapshot.data().connections;
           const index = connections.findIndex(
-            (c) => c.userId == window.localStorage.getItem("chatapp-user-id")
+            (c) =>
+              c.userId ==
+              (window.localStorage.getItem("chatapp-user-id") as string)
           );
           if (
             newMessagesList.length > 0 &&
@@ -107,6 +114,8 @@ export default function Chat({ classes }: any) {
             connections[index].lastMessage =
               newMessagesList[newMessagesList.length - 1].msg;
             connections[index].lastUpdated = getUniqueID();
+            connections[index].lastMsgStatus = MessageStatus.SENT;
+            connections[index].lastUpdatedTime = getCurrentTime();
             updateDoc(userRef, {
               connections: connections,
             });
@@ -153,6 +162,23 @@ export default function Chat({ classes }: any) {
               updateDoc(docRef, {
                 msgStatus: MessageStatus.SEEN,
               });
+              const currUserRef = doc(
+                DB,
+                "users",
+                window.localStorage.getItem("chatapp-user-id") as string
+              );
+              getDoc(currUserRef).then((snapshot) => {
+                const connections: UserConnection[] =
+                  snapshot.data().connections;
+                const index = connections.findIndex(
+                  (c) => c.userId == currentSideScreen.userId
+                );
+
+                connections[index].lastMsgStatus = MessageStatus.SEEN;
+                updateDoc(currUserRef, {
+                  connections: connections,
+                });
+              });
             } else {
               const docRef = doc(DB, "groups", currentSideScreen.listId);
               getDoc(docRef).then((snapshot) => {
@@ -183,7 +209,7 @@ export default function Chat({ classes }: any) {
         }
       });
     });
-
+    setIsLoading(false);
     return () => {
       unsub();
     };
@@ -230,6 +256,8 @@ export default function Chat({ classes }: any) {
                   (window.localStorage.getItem("chatapp-user-id") as string)
                 ) {
                   m.lastMsgStatus = MessageStatus.SENT;
+                } else {
+                  m.lastMsgStatus = MessageStatus.SEEN;
                 }
               });
               updateDoc(doc(DB, "groups", currentSideScreen.listId), {
@@ -243,15 +271,22 @@ export default function Chat({ classes }: any) {
         DBupdate();
       }
     };
+    scrollListToBottom();
     DBupdate();
   }, [list]);
   return (
-    <div className={"flex flex-col h-screen w-screen" + " " + classes}>
+    <div className={"flex flex-col h-screen w-screen relative" + " " + classes}>
       <TopProfileView
         isGroup={currentSideScreen.isGroup}
         name={currentSideScreen.name}
         imageUrl={currentSideScreen.imageUrl}
       />
+      {isLoading && <Loader classes="absolute" />}
+      {list.length == 0 && (
+        <div className="text-lg opacity-30 flex items-end justify-center h-full">
+          <p>No messages to show</p>
+        </div>
+      )}
       <div className="flex flex-col overflow-auto h-full" ref={messagesListRef}>
         {list.map((m, i) => (
           <MessageBox
@@ -265,6 +300,8 @@ export default function Chat({ classes }: any) {
             senderName={m.senderName}
             imageUrl={m.senderProfileImg}
             time={m.time}
+            chatId={currentSideScreen.listId}
+            senderId={m.senderId}
           />
         ))}
       </div>

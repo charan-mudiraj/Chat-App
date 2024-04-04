@@ -1,5 +1,5 @@
 import { UserGroupIcon, UserCircleIcon } from "@heroicons/react/20/solid";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { chatMessagesAtom, sideScreenAtom } from "../atoms/atom";
 import { GroupMember, MessageStatus, UserConnection } from "./types";
 import { getUniqueID } from "./Functions";
@@ -15,10 +15,15 @@ export default function ProfileBar({
   id,
   chatId,
   lastMsgStatus,
+  lastUpdatedTime,
 }: any) {
-  const setCurrentSideScreen = useSetRecoilState(sideScreenAtom);
+  const [currentSideScreen, setCurrentSideScreen] =
+    useRecoilState(sideScreenAtom);
   const setChatMessagesList = useSetRecoilState(chatMessagesAtom);
   const openChat = () => {
+    if (currentSideScreen.listId == chatId) {
+      return;
+    }
     if (isGroup == false && chatId == null) {
       const currUserRef = doc(
         DB,
@@ -35,6 +40,8 @@ export default function ProfileBar({
           chatId: chatId,
           lastMessage: "",
           lastUpdated: getUniqueID(),
+          lastMsgStatus: MessageStatus.SEEN,
+          lastUpdatedTime: "",
         });
         updateDoc(currUserRef, {
           connections: existingConnections,
@@ -48,6 +55,8 @@ export default function ProfileBar({
           chatId: chatId,
           lastMessage: "",
           lastUpdated: getUniqueID(),
+          lastMsgStatus: MessageStatus.SEEN,
+          lastUpdatedTime: "",
         });
         updateDoc(userRef, {
           connections: existingConnections,
@@ -65,23 +74,24 @@ export default function ProfileBar({
   };
   return (
     <div
-      className="flex gap-3 justify-left items-center hover:bg-secondary py-1.5 hover:cursor-pointer pl-5 m-3 rounded-xl relative"
+      className="flex gap-3 justify-left items-center hover:bg-secondary hover:cursor-pointer m-3 rounded-xl relative"
       onClick={openChat}
     >
       {imageUrl ? (
-        <img src={imageUrl} className="h-10 pr-1" />
+        <img src={imageUrl} className="h-12 mr-1 rounded-full my-2 ml-3" />
       ) : isGroup ? (
-        <UserGroupIcon className="h-10 pr-1" />
+        <UserGroupIcon className="h-12 mr-1 my-2 p-1 border-white border-2 rounded-full ml-3" />
       ) : (
-        <UserCircleIcon className="h-10 pr-1" />
+        <UserCircleIcon className="h-14 mr-1 my-1 ml-2" />
       )}
       <div className="flex flex-col">
         <p className="text-lg font-bold text-zinc-200">{name}</p>
         <p className="text-sm text-zinc-400">{lastMsg}</p>
       </div>
       {lastMsgStatus == MessageStatus.SENT && (
-        <div className="h-3 w-3 bg-primary rounded-full absolute right-4"></div>
+        <div className="h-3 w-3 bg-primary rounded-full absolute right-4 bottom-3"></div>
       )}
+      <div className="absolute right-4 top-2 text-xs">{lastUpdatedTime}</div>
     </div>
   );
 }

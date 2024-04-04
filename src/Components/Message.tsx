@@ -2,7 +2,10 @@ import seenIcon from "../assets/seen.png";
 import sentIcon from "../assets/sent.png";
 import clockIcon from "../assets/clock.png";
 import { UserCircleIcon } from "@heroicons/react/20/solid";
-import { MessageStatus } from "./types";
+import { GroupMember, MessageStatus } from "./types";
+import { doc, getDoc } from "firebase/firestore";
+import { DB } from "../firestore/firestore";
+import { useEffect, useState } from "react";
 function ClockIcon() {
   return <img src={clockIcon} className="h-3" />;
 }
@@ -16,9 +19,9 @@ function ProfileIcon({ imageUrl }: any) {
   return (
     <>
       {imageUrl ? (
-        <img src={imageUrl} className="h-10 pr-1" />
+        <img src={imageUrl} className="h-10 ml-1 my-1 mr-2 rounded-full " />
       ) : (
-        <UserCircleIcon className="h-10 pr-1" />
+        <UserCircleIcon className="h-12 mr-1" />
       )}
     </>
   );
@@ -32,6 +35,24 @@ function StatusIndicator({ status }: any) {
     </>
   );
 }
+const getMemberColor = (chatId: string, senderId: string) => {
+  return new Promise((resolve, reject) => {
+    getDoc(doc(DB, "groups", chatId))
+      .then((snapshot) => {
+        const members: GroupMember[] = snapshot.data().members;
+        const index = members.findIndex((m) => m.userId == senderId);
+        if (index !== -1) {
+          resolve(members[index].color);
+        } else {
+          reject(new Error("Member not found"));
+        }
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+};
+
 export default function Message({
   msgStatus,
   isSender,
@@ -40,10 +61,25 @@ export default function Message({
   senderName,
   imageUrl,
   time,
+  chatId,
+  senderId,
 }: any) {
   const bgColor = isSender ? "bg-chat" : "bg-secondary";
   const justify = isSender ? "justify-end" : "justify-start";
   const roundedTop = isSender ? "rounded-tl-xl" : "rounded-tr-xl";
+  const [color, setColor] = useState("white");
+  useEffect(() => {
+    if (isGroup && !isSender) {
+      getMemberColor(chatId, senderId)
+        .then((clr) => {
+          setColor(clr as string);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
+  }, []);
+
   return (
     <div className={"p-2 flex" + " " + justify}>
       {isGroup && !isSender && <ProfileIcon imageUrl={imageUrl} />}
@@ -53,7 +89,9 @@ export default function Message({
         }
       >
         {isGroup && !isSender && (
-          <p className="text-xs text-pink-400">{senderName}</p>
+          <p className="text-xs" style={{ color: color }}>
+            {senderName}
+          </p>
         )}
         <p className="text-md">{msgText}</p>
         <div className="flex justify-end items-center text-xs">

@@ -22,7 +22,7 @@ import {
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { DB, DBStorage } from "../firestore/firestore";
 import { Group, GroupMember, MessageStatus, User } from "./types";
-import { getUniqueID } from "./Functions";
+import { generateRandomColor, getCurrentTime, getUniqueID } from "./Functions";
 
 export default function AddGroup({ onClose }: any) {
   const [photo, setPhoto] = useState<File>();
@@ -82,10 +82,12 @@ export default function AddGroup({ onClose }: any) {
           {
             userId: window.localStorage.getItem("chatapp-user-id") as string,
             lastMsgStatus: MessageStatus.SEEN,
+            color: generateRandomColor(),
           },
           ...selectedUsers,
         ],
         lastMessage: "",
+        lastUpdatedTime: getCurrentTime(),
       };
       // upload the group data
       await setDoc(newDocRef, newGroup);
@@ -108,6 +110,7 @@ export default function AddGroup({ onClose }: any) {
       updatedSelection.push({
         userId: userId,
         lastMsgStatus: MessageStatus.SEEN,
+        color: generateRandomColor(),
       });
     }
     setSelectedUsers(updatedSelection);
@@ -126,6 +129,21 @@ export default function AddGroup({ onClose }: any) {
       setUsersList(users);
     };
     fetchUsers();
+
+    document.addEventListener("click", (e) => {
+      const usersListDiv = document.querySelectorAll(".users-list");
+      const docArea = e.target;
+      let isInside = false;
+      usersListDiv.forEach((div) => {
+        if (div.contains(docArea)) {
+          isInside = true;
+        }
+      });
+      if (!isInside) {
+        toggleDropDown((val) => false);
+        document.removeEventListener("click", () => {});
+      }
+    });
   }, []);
   return (
     <div
@@ -152,7 +170,7 @@ export default function AddGroup({ onClose }: any) {
           />
           <div className="w-full relative h-full">
             <div
-              className="cursor-pointer flex items-center w-full rounded-xl outline outline-[1px] outline-zinc-400 border-0 py-3 pl-5 pr-2 bg-secondary text-white font-light placeholder:text-white/70"
+              className="users-list cursor-pointer flex items-center w-full rounded-xl outline outline-[1px] outline-zinc-400 border-0 py-3 pl-5 pr-2 bg-secondary text-white font-light placeholder:text-white/70"
               onClick={() => {
                 toggleDropDown((val) => !val);
               }}
@@ -161,7 +179,7 @@ export default function AddGroup({ onClose }: any) {
               <ChevronUpDownIcon className="h-8 pl-5" />
             </div>
             {isDropDownActive && (
-              <div className="flex flex-col bg-secondary outline-zinc-400 outline outline-[1px] rounded-xl w-full absolute cursor-pointer px-2 py-2 min-h-full max-h-[150px] overflow-y-auto">
+              <div className="users-list absolute flex flex-col bg-secondary outline-zinc-400 outline outline-[1px] rounded-xl w-full cursor-pointer px-2 py-2 min-h-full max-h-[150px] overflow-y-auto">
                 {usersList.map((user) => (
                   <label
                     key={user.id}

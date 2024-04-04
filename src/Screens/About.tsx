@@ -1,3 +1,3 @@
 export default function About({ classes }: any) {
-  return <div className={classes}></div>;
+  return <div className={classes + " " + "w-screen"}></div>;
 }

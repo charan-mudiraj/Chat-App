@@ -38,6 +38,8 @@ export interface UserConnection {
   chatId: string;
   lastMessage: string;
   lastUpdated: string;
+  lastMsgStatus: MessageStatus;
+  lastUpdatedTime: string;
 }
 export interface User {
   id: string;
@@ -49,6 +51,7 @@ export interface User {
 export interface GroupMember {
   userId: string;
   lastMsgStatus: MessageStatus;
+  color: string;
 }
 export interface Group {
   id: string;
@@ -57,6 +60,7 @@ export interface Group {
   lastUpdated: string;
   members: GroupMember[];
   lastMessage: string;
+  lastUpdatedTime: string;
 }
 export interface SideScreenSchema {
   listId: string;

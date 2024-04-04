@@ -21,7 +21,8 @@ export default function App() {
   const currentSideScreen = useRecoilValue<SideScreenSchema>(sideScreenAtom);
   return (
     <>
-      {isLoading && <Loader />}
+      {isLoading && <Loader classes="fixed bg-zinc-700/50 z-50" />}
+
       {window.localStorage.getItem("chatapp-user-id") == null && <AddUser />}
       <div className="md:flex md:w-screen overflow-hidden">
         <ChatsList classes="md:w-5/12" />

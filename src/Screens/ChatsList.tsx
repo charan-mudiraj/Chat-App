@@ -14,14 +14,23 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { DB } from "../firestore/firestore";
-import { Group, User, UserConnection } from "../Components/types";
+import {
+  Group,
+  MessageStatus,
+  User,
+  UserConnection,
+} from "../Components/types";
+import Loader from "../Components/Loader";
 
 export default function ChatsList({ classes }: any) {
   const [isAddGroupClicked, addGroupToggle] = useState(false);
   const [groups, setGroups] = useState<Group[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [currentUser, setCurrentUser] = useState<User>();
+  const [isLoading, setIsLoading] = useState(false);
+  const [searchString, setSearchString] = useState("");
   useEffect(() => {
+    setIsLoading(true);
     const currUser = window.localStorage.getItem("chatapp-user-id");
 
     const q1 = query(collection(DB, "groups"), orderBy("lastUpdated", "desc"));
@@ -68,13 +77,31 @@ export default function ChatsList({ classes }: any) {
       });
       setUsers(chats);
     });
+    setIsLoading(false);
     return () => {
       unsubGroups();
       unsubChats();
     };
   }, []);
+  const filteredGroups = () => {
+    if (searchString) {
+      return groups.filter((g) =>
+        g.name.toLowerCase().includes(searchString.toLowerCase())
+      );
+    }
+    return groups;
+  };
+  const filteredUsers = () => {
+    if (searchString) {
+      return users.filter((u) =>
+        u.name.toLowerCase().includes(searchString.toLowerCase())
+      );
+    }
+    return users;
+  };
+
   return (
-    <div className={"flex flex-col h-screen" + " " + classes}>
+    <div className={"flex flex-col h-screen relative" + " " + classes}>
       {isAddGroupClicked && (
         <AddGroup
           onClose={() => {
@@ -82,8 +109,14 @@ export default function ChatsList({ classes }: any) {
           }}
         />
       )}
+      {isLoading && <Loader classes="absolute" />}
       <div className="flex gap-3 p-5 sticky top-0">
-        <Input placeholder="Search user or group..." />
+        <Input
+          placeholder="Search user or group..."
+          onInput={(e) => {
+            setSearchString(e.target.value);
+          }}
+        />
         <button
           className="rounded-xl border-none bg-primary text-white py-2 pl-6 pr-8 flex items-center"
           onClick={() => {
@@ -95,7 +128,12 @@ export default function ChatsList({ classes }: any) {
         </button>
       </div>
       <div className="flex flex-col overflow-auto h-full">
-        {groups.map((g, i) => (
+        {users.length > 0 && groups.length > 0 && (
+          <div className="border-white border-b-2 mx-5 opacity-50 text-lg">
+            <p className="ml-1">Groups</p>
+          </div>
+        )}
+        {filteredGroups().map((g, i) => (
           <ProfileBar
             key={i}
             isGroup={true}
@@ -113,9 +151,15 @@ export default function ChatsList({ classes }: any) {
                 )
               ].lastMsgStatus
             }
+            lastUpdatedTime={g.lastUpdatedTime}
           />
         ))}
-        {users.map((u, i) => {
+        {users.length > 0 && groups.length > 0 && (
+          <div className="border-white border-b-2 mx-5 opacity-50 text-lg">
+            <p className="ml-1">Users</p>
+          </div>
+        )}
+        {filteredUsers().map((u, i) => {
           const index = currentUser.connections.findIndex(
             (c) => c.userId == u.id
           );
@@ -129,7 +173,8 @@ export default function ChatsList({ classes }: any) {
                 imageUrl={u.profileImgUrl}
                 name={u.name}
                 lastMsg={currentUser.connections[index].lastMessage}
-                lastMsgId={""}
+                lastMsgStatus={currentUser.connections[index].lastMsgStatus}
+                lastUpdatedTime={currentUser.connections[index].lastUpdatedTime}
               />
             );
           }
@@ -143,6 +188,8 @@ export default function ChatsList({ classes }: any) {
               name={u.name}
               lastMsg={""}
               lastMsgId={""}
+              lastMsgStatus={MessageStatus.SEEN}
+              lastUpdatedTime={""}
             />
           );
         })}
