@@ -14,6 +14,7 @@ export const sideScreenAtom = atom<SideScreenSchema>({
     imageUrl: "",
     name: "",
     userId: "",
+    status: "",
   },
 });
 export const chatMessagesAtom = atom<Message[]>({

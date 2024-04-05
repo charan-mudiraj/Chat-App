@@ -39,6 +39,7 @@ export default function ProfileBar({
   lastUpdatedTime,
   lastMsgSenderId,
   lastMsgSenderName,
+  status,
 }: any) {
   const [currentSideScreen, setCurrentSideScreen] =
     useRecoilState(sideScreenAtom);
@@ -48,9 +49,10 @@ export default function ProfileBar({
   useEffect(() => {
     if (
       isGroup &&
-      lastMsgSenderId !=
-        (window.localStorage.getItem("chatapp-user-id") as string)
+      lastMsgSenderId !==
+        window.localStorage.getItem("chatapp-user-id").toString()
     ) {
+      console.log("Inside");
       getMemberColor(chatId, lastMsgSenderId)
         .then((clr) => {
           setColor(clr as string);
@@ -59,7 +61,7 @@ export default function ProfileBar({
           console.log(e);
         });
     }
-  }, []);
+  }, [lastMsg]);
   const openChat = () => {
     if (currentSideScreen.listId == chatId) {
       return;
@@ -110,6 +112,7 @@ export default function ProfileBar({
       name: name,
       imageUrl: imageUrl,
       userId: isGroup ? "" : id,
+      status: status,
     });
 
     //for mobile view

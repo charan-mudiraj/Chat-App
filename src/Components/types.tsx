@@ -84,4 +84,5 @@ export interface SideScreenSchema {
   imageUrl: string;
   name: string;
   userId?: string;
+  status: string;
 }

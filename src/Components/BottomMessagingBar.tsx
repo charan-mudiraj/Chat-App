@@ -35,6 +35,8 @@ export default function BottomMessagingBar({
       </label>
       <Input
         placeholder="Message"
+        type="text"
+        autoComplete="off"
         value={msg}
         onInput={(e) => {
           setMsg(e.target.value);

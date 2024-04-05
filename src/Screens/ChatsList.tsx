@@ -114,6 +114,8 @@ export default function ChatsList({ classes }: any) {
           onInput={(e) => {
             setSearchString(e.target.value);
           }}
+          type="text"
+          autoComplete="off"
         />
         <button
           className="rounded-xl border-none bg-primary text-white py-2 pl-6 pr-8 flex items-center"
@@ -152,6 +154,7 @@ export default function ChatsList({ classes }: any) {
             lastUpdatedTime={g.lastUpdatedTime}
             lastMsgSenderId={g.lastMsgSenderId}
             lastMsgSenderName={g.lastMsgSenderName}
+            status=""
           />
         ))}
         {users.length > 0 && groups.length > 0 && (
@@ -175,6 +178,7 @@ export default function ChatsList({ classes }: any) {
                 lastMsg={currentUser.connections[index].lastMessage}
                 lastMsgStatus={currentUser.connections[index].lastMsgStatus}
                 lastUpdatedTime={currentUser.connections[index].lastUpdatedTime}
+                status={u.status}
               />
             );
           }
@@ -190,6 +194,7 @@ export default function ChatsList({ classes }: any) {
               lastMsgId={""}
               lastMsgStatus={MessageStatus.SEEN}
               lastUpdatedTime={""}
+              status={u.status}
             />
           );
         })}

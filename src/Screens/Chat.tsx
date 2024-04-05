@@ -255,7 +255,7 @@ export default function Chat({ classes }: any) {
       });
     });
     setIsLoading(false);
-    document.getElementById("chat-bottom-msg-input")?.focus();
+    // document.getElementById("chat-bottom-msg-input")?.focus();
     return () => {
       unsub();
     };
@@ -274,7 +274,7 @@ export default function Chat({ classes }: any) {
 
   const sendMsg = async (msg: string) => {
     const id = getUniqueID();
-    const newMsg: Message = {
+    let newMsg: Message = {
       id: Number(id),
       msg: msg,
       msgStatus: MessageStatus.WAITING,
@@ -284,17 +284,31 @@ export default function Chat({ classes }: any) {
       time: getCurrentTime(),
       isFile: file != null && fileDetails != null,
     };
+
     if (newMsg.isFile && fileDetails != null && file != null) {
-      // upload file and set url
+      newMsg.fileDetails = { ...fileDetails };
+      setList((l) => [...l, newMsg]);
+      // upload file and set url from blob to storage
       const storageRef = ref(DBStorage, "Files/" + fileDetails.name);
       await uploadBytes(storageRef, file);
       const fileUrl = await getDownloadURL(storageRef);
-      const tempDetails = { ...fileDetails };
-      tempDetails.url = fileUrl;
-      newMsg.fileDetails = tempDetails;
+      newMsg = {
+        ...newMsg,
+        fileDetails: {
+          ...fileDetails,
+          url: fileUrl,
+        },
+      };
+    } else {
+      setList((l) => {
+        return [...l, newMsg];
+      });
     }
+
     queueMessages.enqueue(newMsg);
-    setList((l) => [...l, newMsg]);
+    setList((l) => {
+      return [...l];
+    });
     setFile(null);
     setFileDetails(null);
   };
@@ -412,7 +426,7 @@ export default function Chat({ classes }: any) {
       name: fileName,
       ext: fileExt,
       size: size,
-      url: "",
+      url: fileUrl,
     });
   };
 
@@ -422,6 +436,7 @@ export default function Chat({ classes }: any) {
         isGroup={currentSideScreen.isGroup}
         name={currentSideScreen.name}
         imageUrl={currentSideScreen.imageUrl}
+        status={currentSideScreen.status}
       />
       {isLoading && <Loader classes="absolute" />}
       {list.length == 0 && (
