@@ -40,3 +40,19 @@ export function generateRandomColor(transparency = 1) {
 
   return rgbaColor;
 }
+
+export const downlaodFile = async (url: string, fileName: string) => {
+  try {
+    const res = await fetch(url);
+    const blob = await res.blob();
+    const blobUrl = window.URL.createObjectURL(new Blob([blob]));
+    const linkElement = document.createElement("a");
+    linkElement.href = blobUrl;
+    linkElement.setAttribute("download", fileName);
+    document.body.appendChild(linkElement);
+    linkElement.click();
+    linkElement.parentNode.removeChild(linkElement);
+  } catch (e) {
+    console.log(e);
+  }
+};

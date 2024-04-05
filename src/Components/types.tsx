@@ -1,3 +1,15 @@
+export enum FileType {
+  IMAGE = "IMAGE",
+  VIDEO = "VIDEO",
+  OTHER = "OTHER",
+}
+export interface FileDetails {
+  type: FileType;
+  url: string;
+  name: string;
+  ext: string;
+  size: number;
+}
 export interface Message {
   id: number;
   msg: string;
@@ -6,6 +18,8 @@ export interface Message {
   senderName: string;
   senderProfileImg: string;
   time: string;
+  isFile: boolean;
+  fileDetails?: FileDetails;
 }
 export class Queue {
   private list: Message[];
@@ -61,6 +75,8 @@ export interface Group {
   members: GroupMember[];
   lastMessage: string;
   lastUpdatedTime: string;
+  lastMsgSenderId: string;
+  lastMsgSenderName: string;
 }
 export interface SideScreenSchema {
   listId: string;

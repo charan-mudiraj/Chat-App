@@ -20,3 +20,9 @@ export const chatMessagesAtom = atom<Message[]>({
   key: "chatMessages",
   default: [],
 });
+
+// for mobile view
+export const isSideScreenActiveAtom = atom<boolean>({
+  key: "isSideScreenActive",
+  default: false,
+});

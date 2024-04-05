@@ -7,6 +7,7 @@ import { useRecoilValue } from "recoil";
 import { globalLoaderAtom } from "./atoms/atom";
 import { sideScreenAtom } from "./atoms/atom";
 import { SideScreenSchema } from "./Components/types";
+import { isSideScreenActiveAtom } from "./atoms/atom";
 
 function SideScreen({ Screen }: any) {
   return (
@@ -19,20 +20,25 @@ function SideScreen({ Screen }: any) {
 export default function App() {
   const isLoading = useRecoilValue(globalLoaderAtom);
   const currentSideScreen = useRecoilValue<SideScreenSchema>(sideScreenAtom);
+  const isSideScreenActive = useRecoilValue<boolean>(isSideScreenActiveAtom);
   return (
     <>
       {isLoading && <Loader classes="fixed bg-zinc-700/50 z-50" />}
 
       {window.localStorage.getItem("chatapp-user-id") == null && <AddUser />}
       <div className="md:flex md:w-screen overflow-hidden">
-        <ChatsList classes="md:w-5/12" />
+        <ChatsList
+          classes={
+            "md:w-5/12" + " " + (isSideScreenActive ? "hidden md:block" : "")
+          }
+        />
 
         <SideScreen
           Screen={
             currentSideScreen.listId ? (
-              <Chat classes="hidden md:flex" />
+              <Chat classes="md:flex" />
             ) : (
-              <About classes="hidden md:flex" />
+              <About classes="md:flex" />
             )
           }
         />

@@ -2,10 +2,13 @@ import seenIcon from "../assets/seen.png";
 import sentIcon from "../assets/sent.png";
 import clockIcon from "../assets/clock.png";
 import { UserCircleIcon } from "@heroicons/react/20/solid";
-import { GroupMember, MessageStatus } from "./types";
+import { FileType, GroupMember, MessageStatus } from "./types";
 import { doc, getDoc } from "firebase/firestore";
 import { DB } from "../firestore/firestore";
 import { useEffect, useState } from "react";
+import fileIcon from "../assets/file.png";
+import { downlaodFile } from "./Functions";
+
 function ClockIcon() {
   return <img src={clockIcon} className="h-3" />;
 }
@@ -35,7 +38,7 @@ function StatusIndicator({ status }: any) {
     </>
   );
 }
-const getMemberColor = (chatId: string, senderId: string) => {
+export const getMemberColor = (chatId: string, senderId: string) => {
   return new Promise((resolve, reject) => {
     getDoc(doc(DB, "groups", chatId))
       .then((snapshot) => {
@@ -52,7 +55,52 @@ const getMemberColor = (chatId: string, senderId: string) => {
       });
   });
 };
-
+function UnknownFIleView({ name, ext, size, url }: any) {
+  if (Math.floor(Number(size)) > 0) {
+    size = Math.round(Number(size) * 10) / 10 + " MB";
+  } else {
+    size = Math.round(Number(size) * 1024 * 10) / 10 + " KB";
+  }
+  return (
+    <div
+      className="bg-black p-3 rounded-lg mr-2 flex gap-3 bg-opacity-20 cursor-pointer"
+      onClick={() => {
+        downlaodFile(url, name);
+      }}
+    >
+      <img
+        src={fileIcon}
+        className="h-20 bg-zinc-500 py-2 rounded-lg opacity-90"
+      />
+      <div className="flex flex-col">
+        <p className="opacity-90">{name}</p>
+        <p className="opacity-40 text-sm">{ext.toUpperCase() + " File"}</p>
+        <p className="opacity-40 text-xs">{size}</p>
+      </div>
+    </div>
+  );
+}
+function ImageView({ url, name }: any) {
+  return (
+    <div
+      onClick={() => {
+        downlaodFile(url, name);
+      }}
+      className="cursor-pointer"
+    >
+      <img src={url} className="h-36 rounded-lg" />
+    </div>
+  );
+}
+function VideoView({ url }: any) {
+  return (
+    <div>
+      <video controls className="h-36 rounded-lg">
+        <source src={url}></source>
+      </video>
+    </div>
+  );
+}
 export default function Message({
   msgStatus,
   isSender,
@@ -63,6 +111,8 @@ export default function Message({
   time,
   chatId,
   senderId,
+  isFile,
+  fileDetails,
 }: any) {
   const bgColor = isSender ? "bg-chat" : "bg-secondary";
   const justify = isSender ? "justify-end" : "justify-start";
@@ -89,10 +139,25 @@ export default function Message({
         }
       >
         {isGroup && !isSender && (
-          <p className="text-xs" style={{ color: color }}>
+          <p className="text-xs mb-1" style={{ color: color }}>
             {senderName}
           </p>
         )}
+        {isFile &&
+          ((fileDetails.type == FileType.IMAGE && (
+            <ImageView url={fileDetails.url} name={fileDetails.name} />
+          )) ||
+            (fileDetails.type == FileType.VIDEO && (
+              <VideoView url={fileDetails.url} />
+            )) ||
+            (fileDetails.type == FileType.OTHER && (
+              <UnknownFIleView
+                name={fileDetails.name}
+                ext={fileDetails.ext}
+                size={fileDetails.size}
+                url={fileDetails.url}
+              />
+            )))}
         <p className="text-md">{msgText}</p>
         <div className="flex justify-end items-center text-xs">
           <p className="text-xs text-zinc-300 font-thin pr-1">{time}</p>

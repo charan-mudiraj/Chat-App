@@ -1,9 +1,21 @@
 import { PaperAirplaneIcon, PaperClipIcon } from "@heroicons/react/20/solid";
 import Input from "./Input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { sideScreenAtom } from "../atoms/atom";
+import { useRecoilValue } from "recoil";
 
-export default function BottomMessagingBar({ sendMsg }: any) {
+export default function BottomMessagingBar({
+  sendMsg,
+  inputFile,
+  emptyFileDraft,
+}: any) {
   const [msg, setMsg] = useState("");
+  const currentSideScreen = useRecoilValue(sideScreenAtom);
+  useEffect(() => {
+    setMsg("");
+    document.getElementById("file-preview").style.display = "none";
+    emptyFileDraft();
+  }, [currentSideScreen]);
   return (
     <div className="sticky bottom-0 p-4 flex justify-between items-center w-full gap-2 bg-dark border-t-[0.1px] border-secondary">
       <input
@@ -13,7 +25,7 @@ export default function BottomMessagingBar({ sendMsg }: any) {
         value=""
         multiple
         max={5}
-        onChange={() => {}}
+        onChange={inputFile}
       />
       <label
         htmlFor="attachments"
@@ -33,12 +45,17 @@ export default function BottomMessagingBar({ sendMsg }: any) {
             sendBtn?.click();
           }
         }}
+        id="chat-bottom-msg-input"
       />
       <button
         className="p-4 rounded-full bg-dark hover:bg-secondary disabled:opacity-50"
         id="msg-send-btn"
         onClick={() => {
-          if (msg.trim(" ")) {
+          if (document.getElementById("file-preview").style.display != "none") {
+            sendMsg(msg);
+            setMsg("");
+            document.getElementById("file-preview").style.display = "none";
+          } else if (msg.trim(" ")) {
             sendMsg(msg);
             setMsg("");
           }

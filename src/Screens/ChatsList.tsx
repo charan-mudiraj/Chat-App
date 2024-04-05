@@ -152,6 +152,8 @@ export default function ChatsList({ classes }: any) {
               ].lastMsgStatus
             }
             lastUpdatedTime={g.lastUpdatedTime}
+            lastMsgSenderId={g.lastMsgSenderId}
+            lastMsgSenderName={g.lastMsgSenderName}
           />
         ))}
         {users.length > 0 && groups.length > 0 && (

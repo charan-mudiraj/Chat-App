@@ -88,6 +88,8 @@ export default function AddGroup({ onClose }: any) {
         ],
         lastMessage: "",
         lastUpdatedTime: getCurrentTime(),
+        lastMsgSenderId: "",
+        lastMsgSenderName: "",
       };
       // upload the group data
       await setDoc(newDocRef, newGroup);
