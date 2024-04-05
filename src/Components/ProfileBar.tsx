@@ -121,11 +121,11 @@ export default function ProfileBar({
       onClick={openChat}
     >
       {imageUrl ? (
-        <img src={imageUrl} className="h-12 mr-1 rounded-full my-2 ml-3" />
+        <img src={imageUrl} className="h-12 mr-1 my-2 ml-3 rounded-full" />
       ) : isGroup ? (
-        <UserGroupIcon className="h-12 mr-1 my-2 p-1 border-white border-2 rounded-full ml-3" />
+        <UserGroupIcon className="h-12 mr-1 my-2 ml-3 p-1 border-white border-2 rounded-full" />
       ) : (
-        <UserCircleIcon className="h-12 mr-1 my-1 ml-2  border-white border-2 rounded-full" />
+        <UserCircleIcon className="h-12 mr-1 my-2 ml-2 border-white border-2 rounded-full" />
       )}
       <div className="flex flex-col">
         <p className="text-lg font-bold text-zinc-200">{name}</p>
