@@ -417,7 +417,7 @@ export default function Chat({ classes }: any) {
   };
 
   return (
-    <div className={"flex flex-col h-screen w-screen relative" + " " + classes}>
+    <div className={"flex flex-col h-screen w-screen" + " " + classes}>
       <TopProfileView
         isGroup={currentSideScreen.isGroup}
         name={currentSideScreen.name}
