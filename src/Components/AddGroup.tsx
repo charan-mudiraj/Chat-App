@@ -4,7 +4,6 @@ import {
   PlusIcon,
   ChevronUpDownIcon,
   UserCircleIcon,
-  UserGroupIcon,
 } from "@heroicons/react/20/solid";
 import { AddPhoto, Photo } from "./AddUser";
 import { useEffect, useState } from "react";
