@@ -20,16 +20,9 @@
     "noFallthroughCasesInSwitch": true,
 
     // ignore ts errors
-    "strict": false
-  },
-  "globals": {
-    "FIREBASE_API_KEY": "readonly",
-    "FIREBASE_AUTH_DOMAIN": "readonly",
-    "FIREBASE_PROJECT_ID": "readonly",
-    "FIREBASE_STORAGE_BUCKET": "readonly",
-    "FIREBASE_MESSAGING_SENDER_ID": "readonly",
-    "FIREBASE_APP_ID": "readonly",
-    "FIREBASE_MEASUREMENT_ID": "readonly"
+    "strict": false,
+    "composite": true,
+    "types": ["node", "vite/client"]
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
