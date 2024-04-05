@@ -31,6 +31,7 @@ import Loader from "../Components/Loader";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 import fileIcon from "../assets/file.png";
 import ReactDOM from "react-dom";
+// import chatBG from "../assets/chatBG.jpg";
 
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
@@ -431,7 +432,13 @@ export default function Chat({ classes }: any) {
   };
 
   return (
-    <div className={"flex flex-col h-screen w-screen" + " " + classes}>
+    <div
+      className={
+        "flex flex-col h-screen w-screen bg-chat-pattern bg-repeat bg-contain" +
+        " " +
+        classes
+      }
+    >
       <TopProfileView
         isGroup={currentSideScreen.isGroup}
         name={currentSideScreen.name}
@@ -465,7 +472,7 @@ export default function Chat({ classes }: any) {
         ))}
       </div>
       <div
-        className="bg-transparent w-fit pl-3 pb-3 pr-6 ml-5 rounded-lg absolute bottom-[85px]"
+        className="bg-transparent w-fit pl-3 pb-5 pr-5 rounded-lg absolute bottom-20 pt-5"
         id="file-preview"
       ></div>
       <BottomMessagingBar

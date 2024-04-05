@@ -63,7 +63,7 @@ function UnknownFIleView({ name, ext, size, url }: any) {
   }
   return (
     <div
-      className="bg-black p-3 rounded-lg mr-2 flex gap-3 bg-opacity-20 cursor-pointer"
+      className="bg-black p-3 rounded-lg mr-2 flex gap-3 bg-opacity-20 cursor-pointer mb-1"
       onClick={() => {
         downlaodFile(url, name);
       }}
@@ -86,7 +86,7 @@ function ImageView({ url, name }: any) {
       onClick={() => {
         downlaodFile(url, name);
       }}
-      className="cursor-pointer"
+      className="cursor-pointer mb-1"
     >
       <img src={url} className="h-36 rounded-lg" />
     </div>
@@ -94,7 +94,7 @@ function ImageView({ url, name }: any) {
 }
 function VideoView({ url }: any) {
   return (
-    <div>
+    <div className="mb-1">
       <video controls className="h-36 rounded-lg">
         <source src={url}></source>
       </video>

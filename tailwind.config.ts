@@ -11,6 +11,9 @@ module.exports = {
         success: "#4aac68",
         chat: "#006654",
       },
+      backgroundImage: {
+        "chat-pattern": "url('src/assets/chatBG.png')",
+      },
     },
   },
   plugins: [],
