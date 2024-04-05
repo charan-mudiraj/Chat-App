@@ -661,24 +661,16 @@ video {
   margin-right: 0.5rem;
 }
 
+.mt-1 {
+  margin-top: 0.25rem;
+}
+
 .mt-2 {
   margin-top: 0.5rem;
 }
 
 .mt-3 {
   margin-top: 0.75rem;
-}
-
-.mt-1 {
-  margin-top: 0.25rem;
-}
-
-.mt-10 {
-  margin-top: 2.5rem;
-}
-
-.mt-5 {
-  margin-top: 1.25rem;
 }
 
 .block {
@@ -745,6 +737,10 @@ video {
   height: 2rem;
 }
 
+.h-9 {
+  height: 2.25rem;
+}
+
 .h-\[calc\(100\%-88px\)\] {
   height: calc(100% - 88px);
 }
@@ -760,10 +756,6 @@ video {
 
 .h-screen {
   height: 100vh;
-}
-
-.h-9 {
-  height: 2.25rem;
 }
 
 .max-h-\[150px\] {
@@ -953,12 +945,12 @@ video {
   border-bottom-width: 2px;
 }
 
-.border-t-\[0\.1px\] {
-  border-top-width: 0.1px;
-}
-
 .border-t-2 {
   border-top-width: 2px;
+}
+
+.border-t-\[0\.1px\] {
+  border-top-width: 0.1px;
 }
 
 .border-dashed {
@@ -982,16 +974,6 @@ video {
 .border-zinc-400 {
   --tw-border-opacity: 1;
   border-color: rgb(161 161 170 / var(--tw-border-opacity));
-}
-
-.border-zinc-500 {
-  --tw-border-opacity: 1;
-  border-color: rgb(113 113 122 / var(--tw-border-opacity));
-}
-
-.border-zinc-600 {
-  --tw-border-opacity: 1;
-  border-color: rgb(82 82 91 / var(--tw-border-opacity));
 }
 
 .border-zinc-700 {
@@ -1064,10 +1046,6 @@ video {
   --tw-bg-opacity: 0.7;
 }
 
-.bg-chat-pattern {
-  background-image: url('src/assets/chatBG.png');
-}
-
 .bg-contain {
   background-size: contain;
 }
@@ -1128,6 +1106,11 @@ video {
   padding-right: 1.5rem;
 }
 
+.px-8 {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
 .px-9 {
   padding-left: 2.25rem;
   padding-right: 2.25rem;
@@ -1146,21 +1129,6 @@ video {
 .py-4 {
   padding-top: 1rem;
   padding-bottom: 1rem;
-}
-
-.px-10 {
-  padding-left: 2.5rem;
-  padding-right: 2.5rem;
-}
-
-.px-16 {
-  padding-left: 4rem;
-  padding-right: 4rem;
-}
-
-.px-8 {
-  padding-left: 2rem;
-  padding-right: 2rem;
 }
 
 .pb-5 {
@@ -1304,10 +1272,6 @@ video {
   opacity: 0.9;
 }
 
-.opacity-80 {
-  opacity: 0.8;
-}
-
 .outline {
   outline-style: solid;
 }
@@ -1377,6 +1341,10 @@ video {
   background-color: #555;
 }
 
+.chat-pattern {
+  background-image: url("./assets/chatBG.png");
+}
+
 .placeholder\:text-white\/70::-moz-placeholder {
   color: rgb(255 255 255 / 0.7);
 }
@@ -1403,24 +1371,9 @@ video {
   --tw-bg-opacity: 0.5;
 }
 
-.hover\:text-white:hover {
-  --tw-text-opacity: 1;
-  color: rgb(255 255 255 / var(--tw-text-opacity));
-}
-
 .hover\:text-sky-400:hover {
   --tw-text-opacity: 1;
   color: rgb(56 189 248 / var(--tw-text-opacity));
-}
-
-.hover\:text-sky-300:hover {
-  --tw-text-opacity: 1;
-  color: rgb(125 211 252 / var(--tw-text-opacity));
-}
-
-.hover\:text-sky-500:hover {
-  --tw-text-opacity: 1;
-  color: rgb(14 165 233 / var(--tw-text-opacity));
 }
 
 .hover\:opacity-100:hover {

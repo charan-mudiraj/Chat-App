@@ -434,7 +434,7 @@ export default function Chat({ classes }: any) {
   return (
     <div
       className={
-        "flex flex-col h-screen w-screen bg-chat-pattern bg-repeat bg-contain" +
+        "flex flex-col h-screen w-screen chat-pattern bg-repeat bg-contain" +
         " " +
         classes
       }
