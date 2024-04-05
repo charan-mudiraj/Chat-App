@@ -26,19 +26,21 @@ export default function App() {
       {isLoading && <Loader classes="fixed bg-zinc-700/50 z-50" />}
 
       {window.localStorage.getItem("chatapp-user-id") == null && <AddUser />}
-      <div className="md:flex md:w-screen overflow-hidden">
+      <div className="md:flex md:w-screen overflow-hidden h-screen">
         <ChatsList
           classes={
-            "md:w-5/12" + " " + (isSideScreenActive ? "hidden md:block" : "")
+            "md:w-5/12 h-screen" +
+            " " +
+            (isSideScreenActive ? "hidden md:block" : "")
           }
         />
 
         <SideScreen
           Screen={
-            currentSideScreen.listId ? (
-              <Chat classes="md:flex" />
+            currentSideScreen.listId && isSideScreenActive ? (
+              <Chat classes="md:flex h-screen" />
             ) : (
-              <About classes="md:flex" />
+              <About classes="md:flex h-screen" />
             )
           }
         />
