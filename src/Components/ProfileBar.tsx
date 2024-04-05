@@ -7,7 +7,7 @@ import {
 } from "../atoms/atom";
 import { GroupMember, MessageStatus, UserConnection } from "./types";
 import { getUniqueID } from "./Functions";
-import { doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { DB } from "../firestore/firestore";
 import { useEffect, useState } from "react";
 

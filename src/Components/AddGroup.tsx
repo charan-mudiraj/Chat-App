@@ -66,7 +66,7 @@ export default function AddGroup({ onClose }: any) {
       let photoUrl = "";
       if (photo) {
         const storageRef = ref(DBStorage, "Group_Images/" + photo.name);
-        const snapshot = await uploadBytes(storageRef, photo);
+        await uploadBytes(storageRef, photo);
         photoUrl = await getDownloadURL(storageRef);
       }
       // get a doc reference for new group
@@ -133,7 +133,7 @@ export default function AddGroup({ onClose }: any) {
 
     document.addEventListener("click", (e) => {
       const usersListDiv = document.querySelectorAll(".users-list");
-      const docArea = e.target;
+      const docArea = e.target as Node;
       let isInside = false;
       usersListDiv.forEach((div) => {
         if (div.contains(docArea)) {
@@ -141,7 +141,7 @@ export default function AddGroup({ onClose }: any) {
         }
       });
       if (!isInside) {
-        toggleDropDown((val) => false);
+        toggleDropDown(false);
         document.removeEventListener("click", () => {});
       }
     });

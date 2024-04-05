@@ -7,11 +7,9 @@ import {
   collection,
   doc,
   getDoc,
-  getDocs,
   onSnapshot,
   orderBy,
   query,
-  updateDoc,
 } from "firebase/firestore";
 import { DB } from "../firestore/firestore";
 import {

@@ -55,7 +55,7 @@ export default function BottomMessagingBar({
             sendMsg(msg);
             setMsg("");
             document.getElementById("file-preview").style.display = "none";
-          } else if (msg.trim(" ")) {
+          } else if (msg.trim()) {
             sendMsg(msg);
             setMsg("");
           }

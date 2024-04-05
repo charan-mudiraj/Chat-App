@@ -31,7 +31,7 @@ import Loader from "../Components/Loader";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 import fileIcon from "../assets/file.png";
 import ReactDOM from "react-dom";
-import React from "react";
+
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 const queueMessages = new Queue();
@@ -287,7 +287,7 @@ export default function Chat({ classes }: any) {
     if (newMsg.isFile && fileDetails != null && file != null) {
       // upload file and set url
       const storageRef = ref(DBStorage, "Files/" + fileDetails.name);
-      const snapshot = await uploadBytes(storageRef, file);
+      await uploadBytes(storageRef, file);
       const fileUrl = await getDownloadURL(storageRef);
       const tempDetails = { ...fileDetails };
       tempDetails.url = fileUrl;

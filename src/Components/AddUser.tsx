@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import Input from "./Input";
 import { UserPlusIcon, PlusIcon } from "@heroicons/react/20/solid";
 import { DB, DBStorage } from "../firestore/firestore";
@@ -65,7 +65,7 @@ export default function AddUser() {
       let photoUrl = "";
       if (photo) {
         const storageRef = ref(DBStorage, "Profile_Images/" + photo.name);
-        const snapshot = await uploadBytes(storageRef, photo);
+        await uploadBytes(storageRef, photo);
         photoUrl = await getDownloadURL(storageRef);
       }
       // get a doc reference for new user

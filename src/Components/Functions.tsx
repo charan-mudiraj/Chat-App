@@ -1,6 +1,3 @@
-import { ref } from "firebase/storage";
-import { DBStorage } from "../firestore/firestore";
-
 export const getUniqueID = () => {
   const date = new Date();
   // 16-digit ID
