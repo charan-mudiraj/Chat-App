@@ -10,7 +10,7 @@ import { getUniqueID } from "./Functions";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { DB } from "../firestore/firestore";
 import { useEffect, useState } from "react";
-import notificationSound from "../assets/notification.mp3";
+// import notificationSound from "../assets/notification.mp3";
 
 export const getMemberColor = (chatId: string, senderId: string) => {
   return new Promise((resolve, reject) => {
