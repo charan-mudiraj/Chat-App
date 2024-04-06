@@ -1,30 +1,26 @@
-# React + TypeScript + Vite
+# Chat App - [Link](https://chat-app-by-charan.vercel.app/)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A Chatting Web Application similar to [WhatsApp](https://web.whatsapp.com/) where users can share messages, images, videos, and any other files with a single (or) multiple recipients.
 
-Currently, two official plugins are available:
+# Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Unique Chat room for every pair of users. (End-to-End)
+- Unique Chat room for a selected set of users. (Groups)
+- Sharing Image, Video, and any other File.
+- Realtime Messaging with Status Indicator (WAITING, SENT, SEEN)
+- Last-Updated-Time and Last-Message on every Chat Opening Bar.
+- Usage of Queue Data Structure to Synchronize Messages and avoid Race Condition.
+- Ordering the Chats (Groups and Profiles) based on Last-Updated-Time.
+- New-unseen-message Indicator. (Notification)
+- **Resposive Design** - Split Pages View for Large (and) Single Page View for Small Screen Sizes.
 
-## Expanding the ESLint configuration
+# Tech Stack Used
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- ReactJS Framework
+- RecoilJS - For Global State Management
+- TypeScript - For Custom Types
+- Firestore DB (and) Firestore Storage
+- TailwindCSS
+- Heroicons
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+# Pages / Views

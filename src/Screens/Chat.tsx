@@ -21,6 +21,8 @@ import {
 } from "firebase/firestore";
 import { getCurrentTime, getUniqueID } from "../Components/Functions";
 import { DB, DBStorage } from "../firestore/firestore";
+import sentSound from "../assets/sent.mp3";
+import receivedSound from "../assets/received.mp3";
 import MessageBox from "../Components/Message";
 import TopProfileView from "../Components/TopProfileView";
 import BottomMessagingBar from "../Components/BottomMessagingBar";
@@ -180,6 +182,12 @@ export default function Chat({ classes }: any) {
           if (newMsg.msgStatus == MessageStatus.WAITING) {
             currentList[index].msgStatus = MessageStatus.SENT;
             setList(currentList);
+            if (
+              newMsg.senderId ==
+              (window.localStorage.getItem("chatapp-user-id") as string)
+            ) {
+              new Audio(sentSound).play();
+            }
             const docRef = doc(
               DB,
               currentSideScreen.listId,
@@ -196,6 +204,13 @@ export default function Chat({ classes }: any) {
           // new message from the opposite person, so push to current list and update the status to SEEN
           // cuz RECEIVED is when the user is outside the Chat Screen
           setList((l) => [...l, newMsg]);
+          // if (
+          //   !currentSideScreen.isGroup &&
+          //   newMsg.senderId !=
+          //     (window.localStorage.getItem("chatapp-user-id") as string)
+          // ) {
+          //   new Audio(receivedSound).play();
+          // }
           if (
             newMsg.senderId != window.localStorage.getItem("chatapp-user-id")
           ) {

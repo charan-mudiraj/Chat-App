@@ -1,7 +1,7 @@
 import seenIcon from "../assets/seen.png";
 import sentIcon from "../assets/sent.png";
 import clockIcon from "../assets/clock.png";
-import { UserCircleIcon } from "@heroicons/react/20/solid";
+import { UserCircleIcon, ArrowDownTrayIcon } from "@heroicons/react/20/solid";
 import { FileType, GroupMember, MessageStatus } from "./types";
 import { doc, getDoc } from "firebase/firestore";
 import { DB } from "../firestore/firestore";
@@ -86,8 +86,11 @@ function ImageView({ url, name }: any) {
       onClick={() => {
         downlaodFile(url, name);
       }}
-      className="cursor-pointer mb-1"
+      className="cursor-pointer mb-1 relative"
     >
+      <div className="absolute h-full w-full bg-black bg-opacity-20 rounded-lg flex items-center justify-center">
+        <ArrowDownTrayIcon className="h-8 p-1.5 bg-zinc-500 bg-opacity-60 hover:bg-opacity-90 rounded-full" />
+      </div>
       <img src={url} className="h-36 rounded-lg" />
     </div>
   );
