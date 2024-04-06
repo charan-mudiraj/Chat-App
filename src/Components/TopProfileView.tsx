@@ -6,6 +6,8 @@ import {
 import { useSetRecoilState } from "recoil";
 import { isSideScreenActiveAtom, sideScreenAtom } from "../atoms/atom";
 import { SideScreenSchema } from "./types";
+import { useEffect, useState } from "react";
+import { cropPhoto } from "./Functions";
 
 export default function TopProfileView({
   isGroup,
@@ -16,6 +18,14 @@ export default function TopProfileView({
   const setIsSideScreenActive = useSetRecoilState(isSideScreenActiveAtom);
   const setCurrentSideScreen =
     useSetRecoilState<SideScreenSchema>(sideScreenAtom);
+  const [croppedImageUrl, setCroppedImageUrl] = useState("");
+  useEffect(() => {
+    if (imageUrl) {
+      cropPhoto(imageUrl).then((croppedImgUrl) => {
+        setCroppedImageUrl(croppedImgUrl as string);
+      });
+    }
+  });
   return (
     <div className="bg-secondary flex w-full items-center sticky top-0 h-fit pl-1 py-2">
       <ChevronLeftIcon
@@ -33,10 +43,10 @@ export default function TopProfileView({
         }}
       />
       <div className="flex items-center pl-0 md:pl-5 h-full absolute left-12 md:relative md:left-0">
-        {imageUrl ? (
-          <img src={imageUrl} className="h-12 rounded-full" />
+        {imageUrl && croppedImageUrl ? (
+          <img src={croppedImageUrl} className="h-12 rounded-full" />
         ) : isGroup ? (
-          <UserGroupIcon className="h-12 border-white border-2 rounded-full" />
+          <UserGroupIcon className="h-12 border-white border-2 rounded-full p-1" />
         ) : (
           <UserCircleIcon className="h-12 border-white border-2 rounded-full" />
         )}

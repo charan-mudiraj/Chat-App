@@ -6,7 +6,7 @@ import {
   sideScreenAtom,
 } from "../atoms/atom";
 import { GroupMember, MessageStatus, UserConnection } from "./types";
-import { getUniqueID } from "./Functions";
+import { cropPhoto, getUniqueID } from "./Functions";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { DB } from "../firestore/firestore";
 import { useEffect, useState } from "react";
@@ -47,6 +47,14 @@ export default function ProfileBar({
   const setChatMessagesList = useSetRecoilState(chatMessagesAtom);
   const setIsSideScreenActive = useSetRecoilState(isSideScreenActiveAtom);
   const [color, setColor] = useState("rgb(161 161 170)");
+  const [croppedImage, setCroppedImage] = useState("");
+  useEffect(() => {
+    if (imageUrl) {
+      cropPhoto(imageUrl).then((croppedImgUrl) => {
+        setCroppedImage(croppedImgUrl as string);
+      });
+    }
+  });
   useEffect(() => {
     if (
       isGroup &&
@@ -124,8 +132,8 @@ export default function ProfileBar({
       className="flex gap-3 justify-left items-center hover:bg-secondary hover:cursor-pointer m-3 rounded-xl relative"
       onClick={openChat}
     >
-      {imageUrl ? (
-        <img src={imageUrl} className="h-12 mr-1 my-2 ml-3 rounded-full" />
+      {imageUrl && croppedImage ? (
+        <img src={croppedImage} className="h-12 mr-1 my-2 ml-3 rounded-full" />
       ) : isGroup ? (
         <UserGroupIcon className="h-12 mr-1 my-2 ml-3 p-1 border-white border-2 rounded-full" />
       ) : (

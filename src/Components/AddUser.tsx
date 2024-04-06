@@ -6,6 +6,7 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useSetRecoilState } from "recoil";
 import { globalLoaderAtom } from "../atoms/atom";
 import { User } from "./types";
+import { cropPhoto } from "./Functions";
 import {
   collection,
   doc,
@@ -33,6 +34,7 @@ export default function AddUser() {
   const setIsLoading = useSetRecoilState(globalLoaderAtom);
   const [username, setUsername] = useState("");
   const [status, setStatus] = useState("");
+  const [croppedPhoto, setCroppedPhoto] = useState("");
 
   const inputPhoto = () => {
     const input = document.createElement("input");
@@ -42,6 +44,10 @@ export default function AddUser() {
     input.addEventListener("change", async () => {
       const file = input.files[0];
       setPhoto(file);
+      //  get cropped photo
+      const bolbUrl = URL.createObjectURL(file);
+      const croppedPhotoSrc = await cropPhoto(bolbUrl);
+      setCroppedPhoto(croppedPhotoSrc as string);
     });
   };
   const addUser = async () => {
@@ -96,8 +102,8 @@ export default function AddUser() {
       <div className="bg-black w-screen h-screen absolute bg-opacity-70 flex items-center justify-center z-10">
         <div className="bg-dark rounded-xl px-6 pb-6 pt-3 mx-10">
           <div className="flex flex-wrap items-start gap-5 pt-5 justify-center">
-            {photo ? (
-              <Photo src={URL.createObjectURL(photo)} />
+            {croppedPhoto ? (
+              <Photo src={croppedPhoto} />
             ) : (
               <AddPhoto onClick={inputPhoto} />
             )}
