@@ -17,7 +17,7 @@ export default function BottomMessagingBar({
     emptyFileDraft();
   }, [currentSideScreen]);
   return (
-    <div className="sticky bottom-0 p-4 flex justify-between items-center gap-2 bg-dark border-t-[0.1px] border-secondary z-50">
+    <div className="sticky bottom-0 p-4 flex justify-between items-center gap-2 bg-dark border-t-[0.1px] border-secondary">
       <input
         hidden
         id="attachments"

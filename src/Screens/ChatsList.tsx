@@ -3,6 +3,7 @@ import Input from "../Components/Input";
 import AddGroup from "../Components/AddGroup";
 import { useEffect, useState } from "react";
 import { PlusIcon } from "@heroicons/react/20/solid";
+import { UserGroupIcon, UserCircleIcon } from "@heroicons/react/20/solid";
 import {
   collection,
   doc,
@@ -108,7 +109,15 @@ export default function ChatsList({ classes }: any) {
         />
       )}
       {isLoading && <Loader classes="absolute" />}
-      <div className="flex gap-3 p-5 sticky top-0">
+      <div className="flex gap-3 p-3 sticky top-0 bg-secondary">
+        {currentUser && currentUser.profileImgUrl ? (
+          <img src={currentUser.profileImgUrl} className="h-14 rounded-full" />
+        ) : (
+          <div>
+            <UserCircleIcon className="border-white border-2 h-14 rounded-full" />
+          </div>
+        )}
+
         <Input
           placeholder="Search user or group..."
           onInput={(e) => {
@@ -118,13 +127,15 @@ export default function ChatsList({ classes }: any) {
           autoComplete="off"
         />
         <button
-          className="rounded-xl border-none bg-primary text-white py-2 pl-6 pr-8 flex items-center"
+          className="rounded-xl border-none bg-primary text-white py-1 pl-2 pr-3 flex items-center"
           onClick={() => {
             addGroupToggle((val) => !val);
           }}
         >
-          <PlusIcon className="h-6 pr-1" />
-          <p className="w-max">Add Group</p>
+          <PlusIcon className="h-8 pr-1" />
+          <p className="w-max">
+            <UserGroupIcon className="h-11" />
+          </p>
         </button>
       </div>
       <div className="flex flex-col overflow-auto h-full">
