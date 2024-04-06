@@ -21,8 +21,28 @@ import {
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { DB, DBStorage } from "../firestore/firestore";
 import { Group, GroupMember, MessageStatus, User } from "./types";
-import { generateRandomColor, getCurrentTime, getUniqueID } from "./Functions";
+import {
+  cropPhoto,
+  generateRandomColor,
+  getCurrentTime,
+  getUniqueID,
+} from "./Functions";
 
+function ProfileImage({ imageUrl }: any) {
+  const [croppedImage, setCroppedImage] = useState("");
+  useEffect(() => {
+    cropPhoto(imageUrl).then((croppedImg) => {
+      setCroppedImage(croppedImg as string);
+    });
+  }, []);
+  return (
+    <>
+      {croppedImage && (
+        <img src={croppedImage} className="h-10 mr-2 rounded-full" />
+      )}
+    </>
+  );
+}
 export default function AddGroup({ onClose }: any) {
   const [photo, setPhoto] = useState<File>();
   const [groupname, setGroupname] = useState("");
@@ -197,10 +217,7 @@ export default function AddGroup({ onClose }: any) {
                     />
                     <div className="flex justify-left items-center rounded-xl">
                       {user.profileImgUrl ? (
-                        <img
-                          src={user.profileImgUrl}
-                          className="h-10 mr-2 rounded-full"
-                        />
+                        <ProfileImage imageUrl={user.profileImgUrl} />
                       ) : (
                         <UserCircleIcon className="h-10 pr-1" />
                       )}
