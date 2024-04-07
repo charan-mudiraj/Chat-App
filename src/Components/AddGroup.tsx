@@ -50,6 +50,7 @@ export default function AddGroup({ onClose }: any) {
   const [selectedUsers, setSelectedUsers] = useState<GroupMember[]>([]);
   const [usersList, setUsersList] = useState<User[]>([]);
   const [isDropDownActive, toggleDropDown] = useState(false);
+  const [croppedPhoto, setCroppedPhoto] = useState("");
 
   const inputPhoto = () => {
     const input = document.createElement("input");
@@ -59,6 +60,10 @@ export default function AddGroup({ onClose }: any) {
     input.addEventListener("change", async () => {
       const file = input.files[0];
       setPhoto(file);
+      //  get cropped photo
+      const bolbUrl = URL.createObjectURL(file);
+      const croppedPhotoSrc = await cropPhoto(bolbUrl);
+      setCroppedPhoto(croppedPhotoSrc as string);
     });
   };
   const addGroup = async () => {
@@ -178,8 +183,8 @@ export default function AddGroup({ onClose }: any) {
       <div className="bg-dark rounded-xl px-6 pb-6 pt-3 flex flex-col items-end">
         <Close onClick={onClose} />
         <div className="flex flex-col gap-5 items-center pt-5">
-          {photo ? (
-            <Photo src={URL.createObjectURL(photo)} />
+          {photo && croppedPhoto ? (
+            <Photo src={croppedPhoto} />
           ) : (
             <AddPhoto onClick={inputPhoto} />
           )}
