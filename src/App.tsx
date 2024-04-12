@@ -8,7 +8,7 @@ import { globalLoaderAtom } from "./atoms/atom";
 import { sideScreenAtom } from "./atoms/atom";
 import { SideScreenSchema } from "./Components/types";
 import { isSideScreenActiveAtom } from "./atoms/atom";
-import { collection, doc, getDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { DB } from "./firestore/firestore";
 import { useEffect, useState } from "react";
 
