@@ -8,6 +8,9 @@ import { globalLoaderAtom } from "./atoms/atom";
 import { sideScreenAtom } from "./atoms/atom";
 import { SideScreenSchema } from "./Components/types";
 import { isSideScreenActiveAtom } from "./atoms/atom";
+import { collection, doc, getDoc } from "firebase/firestore";
+import { DB } from "./firestore/firestore";
+import { useEffect, useState } from "react";
 
 function SideScreen({ Screen }: any) {
   return (
@@ -21,11 +24,30 @@ export default function App() {
   const isLoading = useRecoilValue(globalLoaderAtom);
   const currentSideScreen = useRecoilValue<SideScreenSchema>(sideScreenAtom);
   const isSideScreenActive = useRecoilValue<boolean>(isSideScreenActiveAtom);
+  const [isUser, setIsUser] = useState<boolean>();
+
+  useEffect(() => {
+    const checkUserExists = async () => {
+      const userId = window.localStorage.getItem("chatapp-user-id") as string;
+      if (userId == null) {
+        setIsUser(false);
+        return;
+      }
+      const snapshot = await getDoc(doc(DB, "users", userId));
+      if (snapshot.exists()) {
+        setIsUser(true);
+      } else {
+        setIsUser(false);
+      }
+    };
+    checkUserExists();
+  }, []);
+
   return (
     <>
       {isLoading && <Loader classes="fixed bg-zinc-700/50 z-50" />}
 
-      {window.localStorage.getItem("chatapp-user-id") == null && <AddUser />}
+      {isUser == false && <AddUser />}
       <div className="md:flex md:w-screen overflow-hidden h-screen">
         <ChatsList
           classes={
