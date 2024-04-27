@@ -1,4 +1,4 @@
-# Chat App - [Live Link](https://chat-app-by-charan.vercel.app/) - [Demo Link](https://www.youtube.com/watch?v=5_Ouh0Q_aQo)
+# Chat App - [Live Link](https://chat-app-by-charan.vercel.app/) - [Demo Link](https://www.youtube.com/watch?v=5_Ouh0Q_aQo) - [Blog Post](https://blogsbycharan.hashnode.dev/how-to-build-a-chat-app)
 
 A Chatting Web Application similar to [WhatsApp](https://web.whatsapp.com/) where users can share messages, images, videos, and any other files with a single (or) multiple recipients.
 
@@ -15,7 +15,7 @@ A Chatting Web Application similar to [WhatsApp](https://web.whatsapp.com/) wher
 - Usage of Queue Data Structure to Synchronize Messages and avoid Race Condition.
 - Ordering the Chats (Groups and Profiles) based on Last-Updated-Time.
 - New-unseen-message Indicator. (Notification)
-- **Resposive Design** - Split Pages View for Large (and) Single Page View for Small Screen Sizes.
+- **Responsive Design** - Split Pages View for Large (and) Single Page View for Small Screen Sizes.
 
 # Tech Stack Used
 
