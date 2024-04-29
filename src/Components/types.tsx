@@ -47,13 +47,17 @@ export enum MessageStatus {
   SENT = "SENT",
   SEEN = "SEEN",
 }
-export interface UserConnection {
+interface LastMessage {
+  lastUpdated: string;
+  lastMessage: string;
+  lastUpdatedTime: string;
+  lastMsgSenderId: string;
+  lastMsgSenderName: string;
+}
+export interface UserConnection extends LastMessage {
   userId: string;
   chatId: string;
-  lastMessage: string;
-  lastUpdated: string;
   lastMsgStatus: MessageStatus;
-  lastUpdatedTime: string;
 }
 export interface User {
   id: string;
@@ -67,16 +71,11 @@ export interface GroupMember {
   lastMsgStatus: MessageStatus;
   color: string;
 }
-export interface Group {
+export interface Group extends LastMessage {
   id: string;
   name: string;
   groupImgUrl: string;
-  lastUpdated: string;
   members: GroupMember[];
-  lastMessage: string;
-  lastUpdatedTime: string;
-  lastMsgSenderId: string;
-  lastMsgSenderName: string;
 }
 export interface SideScreenSchema {
   listId: string;

@@ -34,7 +34,6 @@ export default function ChatsList({ classes }: any) {
   useEffect(() => {
     setIsLoading(true);
     const currUser = window.localStorage.getItem("chatapp-user-id");
-
     const q1 = query(collection(DB, "groups"), orderBy("lastUpdated", "desc"));
     const unsubGroups = onSnapshot(q1, (snapshot) => {
       const chats: Group[] = [];
@@ -53,7 +52,7 @@ export default function ChatsList({ classes }: any) {
     let connections: UserConnection[];
     if (currUser != null) {
       getDoc(doc(DB, "users", currUser)).then((snap) => {
-        connections = snap.data().connections;
+        connections = snap.data()?.connections;
       });
     }
     const unsubChats = onSnapshot(q2, (snapshot) => {
@@ -161,7 +160,7 @@ export default function ChatsList({ classes }: any) {
             chatId={g.id}
             imageUrl={g.groupImgUrl}
             name={g.name}
-            lastMsg={g.lastMessage}
+            status=""
             lastMsgStatus={
               g.members[
                 g.members.findIndex(
@@ -171,10 +170,10 @@ export default function ChatsList({ classes }: any) {
                 )
               ].lastMsgStatus
             }
+            lastMsg={g.lastMessage}
             lastUpdatedTime={g.lastUpdatedTime}
             lastMsgSenderId={g.lastMsgSenderId}
             lastMsgSenderName={g.lastMsgSenderName}
-            status=""
           />
         ))}
         {users.length > 0 && groups.length > 0 && (
@@ -183,7 +182,7 @@ export default function ChatsList({ classes }: any) {
           </div>
         )}
         {filteredUsers().map((u, i) => {
-          const index = currentUser.connections.findIndex(
+          const index = currentUser?.connections.findIndex(
             (c) => c.userId == u.id
           );
           if (index >= 0) {
@@ -195,10 +194,14 @@ export default function ChatsList({ classes }: any) {
                 id={u.id}
                 imageUrl={u.profileImgUrl}
                 name={u.name}
-                lastMsg={currentUser.connections[index].lastMessage}
-                lastMsgStatus={currentUser.connections[index].lastMsgStatus}
-                lastUpdatedTime={currentUser.connections[index].lastUpdatedTime}
                 status={u.status}
+                lastMsgStatus={currentUser.connections[index].lastMsgStatus}
+                lastMsg={currentUser.connections[index].lastMessage}
+                lastUpdatedTime={currentUser.connections[index].lastUpdatedTime}
+                lastMsgSenderId={currentUser.connections[index].lastMsgSenderId}
+                lastMsgSenderName={
+                  currentUser.connections[index].lastMsgSenderName
+                }
               />
             );
           }
@@ -210,11 +213,12 @@ export default function ChatsList({ classes }: any) {
               id={u.id}
               imageUrl={u.profileImgUrl}
               name={u.name}
-              lastMsg={""}
-              lastMsgId={""}
-              lastMsgStatus={MessageStatus.SEEN}
-              lastUpdatedTime={""}
               status={u.status}
+              lastMsgStatus={MessageStatus.SEEN}
+              lastMsg={""}
+              lastUpdatedTime={""}
+              lastMsgSenderId={""}
+              lastMsgSenderName={""}
             />
           );
         })}

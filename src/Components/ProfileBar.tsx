@@ -32,15 +32,15 @@ export const getMemberColor = (chatId: string, senderId: string) => {
 export default function ProfileBar({
   isGroup,
   name,
-  lastMsg,
   imageUrl,
   id,
   chatId,
+  status,
   lastMsgStatus,
+  lastMsg,
   lastUpdatedTime,
   lastMsgSenderId,
   lastMsgSenderName,
-  status,
 }: any) {
   const [currentSideScreen, setCurrentSideScreen] =
     useRecoilState(sideScreenAtom);
@@ -156,9 +156,11 @@ export default function ProfileBar({
           <p className="text-sm text-zinc-400">{lastMsg}</p>
         </div>
       </div>
-      {lastMsgStatus == MessageStatus.SENT && (
-        <div className="h-3 w-3 bg-primary rounded-full absolute right-4 bottom-3"></div>
-      )}
+      {lastMsgSenderId !=
+        (window.localStorage.getItem("chatapp-user-id") as string) &&
+        lastMsgStatus === MessageStatus.SENT && (
+          <div className="h-3 w-3 bg-primary rounded-full absolute right-4 bottom-3"></div>
+        )}
       <div className="absolute right-4 top-2 text-xs">{lastUpdatedTime}</div>
     </div>
   );

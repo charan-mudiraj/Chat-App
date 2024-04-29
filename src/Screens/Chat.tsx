@@ -141,6 +141,10 @@ export default function Chat({ classes }: any) {
             connections[index].lastUpdated = getUniqueID();
             connections[index].lastMsgStatus = MessageStatus.SEEN;
             connections[index].lastUpdatedTime = getCurrentTime();
+            connections[index].lastMsgSenderId =
+              newMessagesList[newMessagesList.length - 1].senderId;
+            connections[index].lastMsgSenderName =
+              newMessagesList[newMessagesList.length - 1].senderName;
             updateDoc(currUserRef, {
               connections: connections,
             });
@@ -164,6 +168,10 @@ export default function Chat({ classes }: any) {
             connections[index].lastUpdated = getUniqueID();
             connections[index].lastMsgStatus = MessageStatus.SENT;
             connections[index].lastUpdatedTime = getCurrentTime();
+            connections[index].lastMsgSenderId =
+              newMessagesList[newMessagesList.length - 1].senderId;
+            connections[index].lastMsgSenderName =
+              newMessagesList[newMessagesList.length - 1].senderName;
             updateDoc(userRef, {
               connections: connections,
             });

@@ -99,7 +99,7 @@ export default function AddUser() {
   };
   return (
     <>
-      <div className="bg-black w-screen h-screen absolute bg-opacity-70 flex items-center justify-center z-10">
+      <div className="bg-black w-screen h-screen absolute bg-opacity-80 flex items-center justify-center z-10">
         <div className="bg-dark rounded-xl px-6 pb-6 pt-3 mx-10">
           <div className="flex flex-wrap items-start gap-5 pt-5 justify-center">
             {croppedPhoto ? (
