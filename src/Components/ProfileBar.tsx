@@ -93,8 +93,8 @@ export default function ProfileBar({
           lastUpdated: getUniqueID(),
           lastMsgStatus: MessageStatus.SEEN,
           lastUpdatedTime: "",
-          lastMsgSenderId: "";
-          lastMsgSenderName: "";
+          lastMsgSenderId: "",
+          lastMsgSenderName: "",
         });
         updateDoc(currUserRef, {
           connections: existingConnections,
@@ -110,8 +110,8 @@ export default function ProfileBar({
           lastUpdated: getUniqueID(),
           lastMsgStatus: MessageStatus.SEEN,
           lastUpdatedTime: "",
-          lastMsgSenderId: "";
-          lastMsgSenderName: "";
+          lastMsgSenderId: "",
+          lastMsgSenderName: "",
         });
         updateDoc(userRef, {
           connections: existingConnections,
