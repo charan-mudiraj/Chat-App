@@ -103,19 +103,14 @@ export default function Chat({ classes }: any) {
         newMessagesList.push(change.doc.data() as Message);
       });
       // Update last msg and last updated in group doc
-      if (currentSideScreen.isGroup) {
-        getDoc(doc(DB, "groups", currentSideScreen.listId)).then((snapshot) => {
-          if (newMessagesList.length > 0) {
-            updateDoc(doc(DB, "groups", currentSideScreen.listId), {
-              lastMessage: newMessagesList[newMessagesList.length - 1].msg,
-              lastUpdated: getUniqueID(),
-              lastUpdatedTime: getCurrentTime(),
-              lastMsgSenderId:
-                newMessagesList[newMessagesList.length - 1].senderId,
-              lastMsgSenderName:
-                newMessagesList[newMessagesList.length - 1].senderName,
-            });
-          }
+      if (currentSideScreen.isGroup && newMessagesList.length > 0) {
+        updateDoc(doc(DB, "groups", currentSideScreen.listId), {
+          lastMessage: newMessagesList[newMessagesList.length - 1].msg,
+          lastUpdated: getUniqueID(),
+          lastUpdatedTime: getCurrentTime(),
+          lastMsgSenderId: newMessagesList[newMessagesList.length - 1].senderId,
+          lastMsgSenderName:
+            newMessagesList[newMessagesList.length - 1].senderName,
         });
       } else {
         const currUserRef = doc(
