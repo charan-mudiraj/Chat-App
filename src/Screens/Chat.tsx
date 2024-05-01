@@ -105,10 +105,7 @@ export default function Chat({ classes }: any) {
       // Update last msg and last updated in group doc
       if (currentSideScreen.isGroup) {
         getDoc(doc(DB, "groups", currentSideScreen.listId)).then((snapshot) => {
-          if (
-            snapshot.data().lastMessage !=
-            newMessagesList[newMessagesList.length - 1].msg
-          ) {
+          if (newMessagesList.length > 0) {
             updateDoc(doc(DB, "groups", currentSideScreen.listId), {
               lastMessage: newMessagesList[newMessagesList.length - 1].msg,
               lastUpdated: getUniqueID(),
@@ -131,9 +128,6 @@ export default function Chat({ classes }: any) {
           const index = connections.findIndex(
             (c) => c.userId == currentSideScreen.userId
           );
-          console.log("Current:");
-          console.log(newMessagesList[newMessagesList.length - 1].msg);
-          console.log(connections[index].lastMessage);
           if (newMessagesList.length > 0) {
             connections[index].lastMessage =
               newMessagesList[newMessagesList.length - 1].msg;
@@ -158,9 +152,6 @@ export default function Chat({ classes }: any) {
               c.userId ==
               (window.localStorage.getItem("chatapp-user-id") as string)
           );
-          console.log("Opp User:");
-          console.log(newMessagesList[newMessagesList.length - 1].msg);
-          console.log(connections[index].lastMessage);
           if (newMessagesList.length > 0) {
             connections[index].lastMessage =
               newMessagesList[newMessagesList.length - 1].msg;

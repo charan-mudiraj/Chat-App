@@ -42,6 +42,7 @@ export default function ProfileBar({
   lastUpdatedTime,
   lastMsgSenderId,
   lastMsgSenderName,
+  lastMsgStatusForGroup,
 }: any) {
   const [currentSideScreen, setCurrentSideScreen] =
     useRecoilState(sideScreenAtom);
@@ -57,8 +58,6 @@ export default function ProfileBar({
     }
   });
   useEffect(() => {
-    console.log(name);
-    console.log(lastMsgStatus);
     if (
       isGroup &&
       lastMsgSenderId !==
@@ -149,9 +148,12 @@ export default function ProfileBar({
         <p className="text-lg font-bold text-zinc-200">{name}</p>
         <div className="flex gap-1 items-center">
           {lastMsgSenderId ==
-            (window.localStorage.getItem("chatapp-user-id") as string) && (
-            <StatusIndicator status={lastMsgStatus} />
-          )}
+            (window.localStorage.getItem("chatapp-user-id") as string) &&
+            (isGroup ? (
+              <StatusIndicator status={lastMsgStatusForGroup} />
+            ) : (
+              <StatusIndicator status={lastMsgStatus} />
+            ))}
           {isGroup &&
             lastMsg &&
             (lastMsgSenderId !=

@@ -76,7 +76,6 @@ export default function ChatsList({ classes }: any) {
         return Number(lastUpdatedB) - Number(lastUpdatedA);
       });
       setUsers(chats);
-      console.log(chats);
     });
     setIsLoading(false);
     return () => {
@@ -107,7 +106,6 @@ export default function ChatsList({ classes }: any) {
     }
     return users;
   };
-
   return (
     <div className={"flex flex-col h-screen relative" + " " + classes}>
       {isAddGroupClicked && (
@@ -171,6 +169,13 @@ export default function ChatsList({ classes }: any) {
                 )
               ].lastMsgStatus
             }
+            lastMsgStatusForGroup={(() => {
+              for (let m of g.members) {
+                if (m.lastMsgStatus != MessageStatus.SEEN)
+                  return MessageStatus.SENT;
+              }
+              return MessageStatus.SEEN;
+            })()}
             lastMsg={g.lastMessage}
             lastUpdatedTime={g.lastUpdatedTime}
             lastMsgSenderId={g.lastMsgSenderId}
@@ -187,7 +192,6 @@ export default function ChatsList({ classes }: any) {
             (c) => c.userId == u.id
           );
           if (index >= 0) {
-            console.log(currentUser.connections[index]);
             return (
               <ProfileBar
                 key={i}
