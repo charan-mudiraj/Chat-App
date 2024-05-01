@@ -11,6 +11,7 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { DB } from "../firestore/firestore";
 import { useEffect, useState } from "react";
 // import notificationSound from "../assets/notification.mp3";
+import { StatusIndicator } from "./Message";
 
 export const getMemberColor = (chatId: string, senderId: string) => {
   return new Promise((resolve, reject) => {
@@ -56,12 +57,13 @@ export default function ProfileBar({
     }
   });
   useEffect(() => {
+    console.log(name);
+    console.log(lastMsgStatus);
     if (
       isGroup &&
       lastMsgSenderId !==
         window.localStorage.getItem("chatapp-user-id").toString()
     ) {
-      console.log("Inside");
       getMemberColor(chatId, lastMsgSenderId)
         .then((clr) => {
           setColor(clr as string);
@@ -145,23 +147,33 @@ export default function ProfileBar({
       )}
       <div className="flex flex-col">
         <p className="text-lg font-bold text-zinc-200">{name}</p>
-        <div className="flex gap-1">
+        <div className="flex gap-1 items-center">
+          {lastMsgSenderId ==
+            (window.localStorage.getItem("chatapp-user-id") as string) && (
+            <StatusIndicator status={lastMsgStatus} />
+          )}
           {isGroup &&
             lastMsg &&
-            lastMsgSenderId !=
-              (window.localStorage.getItem("chatapp-user-id") as string) && (
+            (lastMsgSenderId !=
+            (window.localStorage.getItem("chatapp-user-id") as string) ? (
               <>
                 <p className="text-sm font-bold" style={{ color: color }}>
                   {lastMsgSenderName}
                 </p>
                 <p className="text-sm text-zinc-400">:</p>
               </>
-            )}
+            ) : (
+              <>
+                <p className="text-sm font-bold text-zinc-400">You</p>
+                <p className="text-sm text-zinc-400">:</p>
+              </>
+            ))}
           <p className="text-sm text-zinc-400">{lastMsg}</p>
         </div>
       </div>
-      {lastMsgSenderId !=
-        (window.localStorage.getItem("chatapp-user-id") as string) &&
+      {currentSideScreen.listId != chatId &&
+        lastMsgSenderId !=
+          (window.localStorage.getItem("chatapp-user-id") as string) &&
         lastMsgStatus === MessageStatus.SENT && (
           <div className="h-3 w-3 bg-primary rounded-full absolute right-4 bottom-3"></div>
         )}

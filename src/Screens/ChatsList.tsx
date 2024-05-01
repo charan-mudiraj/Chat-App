@@ -65,17 +65,18 @@ export default function ChatsList({ classes }: any) {
         }
       });
       // Sort users based on the lastUpdated field within their connections
-      chats.sort((a, b) => {
-        const lastUpdatedA = connections.find(
-          (connection) => connection.userId === a.id
-        )?.lastUpdated;
-        const lastUpdatedB = connections.find(
-          (connection) => connection.userId === b.id
-        )?.lastUpdated;
-        // Sort in descending order (latest first)
-        return Number(lastUpdatedB) - Number(lastUpdatedA);
-      });
+      // chats.sort((a, b) => {
+      //   const lastUpdatedA = connections.find(
+      //     (connection) => connection.userId === a.id
+      //   )?.lastUpdated;
+      //   const lastUpdatedB = connections.find(
+      //     (connection) => connection.userId === b.id
+      //   )?.lastUpdated;
+      //   // Sort in descending order (latest first)
+      //   return Number(lastUpdatedB) - Number(lastUpdatedA);
+      // });
       setUsers(chats);
+      console.log(chats);
     });
     setIsLoading(false);
     return () => {
@@ -186,6 +187,7 @@ export default function ChatsList({ classes }: any) {
             (c) => c.userId == u.id
           );
           if (index >= 0) {
+            console.log(currentUser.connections[index]);
             return (
               <ProfileBar
                 key={i}

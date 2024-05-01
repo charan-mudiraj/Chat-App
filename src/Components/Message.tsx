@@ -12,10 +12,10 @@ import { cropPhoto, downlaodFile } from "./Functions";
 function ClockIcon() {
   return <img src={clockIcon} className="h-3" />;
 }
-function OneTickIcon() {
+function TickUnseenIcon() {
   return <img src={sentIcon} className="h-2.5" />;
 }
-function TwoTickSeenIcon() {
+function TickSeenIcon() {
   return <img src={seenIcon} className="h-2.5" />;
 }
 function ProfileIcon({ imageUrl, croppedImage }: any) {
@@ -29,12 +29,12 @@ function ProfileIcon({ imageUrl, croppedImage }: any) {
     </>
   );
 }
-function StatusIndicator({ status }: any) {
+export function StatusIndicator({ status }: any) {
   return (
     <>
       {(status == MessageStatus.WAITING && <ClockIcon />) ||
-        (status == MessageStatus.SENT && <OneTickIcon />) ||
-        (status == MessageStatus.SEEN && <TwoTickSeenIcon />)}
+        (status == MessageStatus.SENT && <TickUnseenIcon />) ||
+        (status == MessageStatus.SEEN && <TickSeenIcon />)}
     </>
   );
 }

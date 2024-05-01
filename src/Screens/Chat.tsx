@@ -131,15 +131,15 @@ export default function Chat({ classes }: any) {
           const index = connections.findIndex(
             (c) => c.userId == currentSideScreen.userId
           );
-          if (
-            newMessagesList.length > 0 &&
-            connections[index].lastMessage !=
-              newMessagesList[newMessagesList.length - 1].msg
-          ) {
+          console.log("Current:");
+          console.log(newMessagesList[newMessagesList.length - 1].msg);
+          console.log(connections[index].lastMessage);
+          if (newMessagesList.length > 0) {
             connections[index].lastMessage =
               newMessagesList[newMessagesList.length - 1].msg;
             connections[index].lastUpdated = getUniqueID();
-            connections[index].lastMsgStatus = MessageStatus.SEEN;
+            connections[index].lastMsgStatus =
+              newMessagesList[newMessagesList.length - 1].msgStatus;
             connections[index].lastUpdatedTime = getCurrentTime();
             connections[index].lastMsgSenderId =
               newMessagesList[newMessagesList.length - 1].senderId;
@@ -158,15 +158,15 @@ export default function Chat({ classes }: any) {
               c.userId ==
               (window.localStorage.getItem("chatapp-user-id") as string)
           );
-          if (
-            newMessagesList.length > 0 &&
-            connections[index].lastMessage !=
-              newMessagesList[newMessagesList.length - 1].msg
-          ) {
+          console.log("Opp User:");
+          console.log(newMessagesList[newMessagesList.length - 1].msg);
+          console.log(connections[index].lastMessage);
+          if (newMessagesList.length > 0) {
             connections[index].lastMessage =
               newMessagesList[newMessagesList.length - 1].msg;
             connections[index].lastUpdated = getUniqueID();
-            connections[index].lastMsgStatus = MessageStatus.SENT;
+            connections[index].lastMsgStatus =
+              newMessagesList[newMessagesList.length - 1].msgStatus;
             connections[index].lastUpdatedTime = getCurrentTime();
             connections[index].lastMsgSenderId =
               newMessagesList[newMessagesList.length - 1].senderId;
