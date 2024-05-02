@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   FileDetails,
   FileType,
+  Group,
   GroupMember,
   Message,
   Queue,
@@ -104,13 +105,19 @@ export default function Chat({ classes }: any) {
       });
       // Update last msg and last updated in group doc
       if (currentSideScreen.isGroup && newMessagesList.length > 0) {
-        updateDoc(doc(DB, "groups", currentSideScreen.listId), {
-          lastMessage: newMessagesList[newMessagesList.length - 1].msg,
-          lastUpdated: getUniqueID(),
-          lastUpdatedTime: getCurrentTime(),
-          lastMsgSenderId: newMessagesList[newMessagesList.length - 1].senderId,
-          lastMsgSenderName:
-            newMessagesList[newMessagesList.length - 1].senderName,
+        getDoc(doc(DB, "groups", currentSideScreen.listId)).then((snapshot) => {
+          if (
+            newMessagesList.length == 1 &&
+            snapshot.data().lastMessage != newMessagesList[0].msg
+          ) {
+            updateDoc(doc(DB, "groups", currentSideScreen.listId), {
+              lastMessage: newMessagesList[0].msg,
+              lastUpdated: getUniqueID(),
+              lastUpdatedTime: getCurrentTime(),
+              lastMsgSenderId: newMessagesList[0].senderId,
+              lastMsgSenderName: newMessagesList[0].senderName,
+            });
+          }
         });
       } else {
         const currUserRef = doc(
