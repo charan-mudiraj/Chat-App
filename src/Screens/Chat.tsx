@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import {
   FileDetails,
   FileType,
-  Group,
   GroupMember,
   Message,
   Queue,
