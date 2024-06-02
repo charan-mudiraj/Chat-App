@@ -1,11 +1,11 @@
-import { useRecoilValue } from "recoil"
-import { sideScreenAtom } from "../atoms/atom"
+// import { useRecoilValue } from "recoil"
+// import { sideScreenAtom } from "../atoms/atom"
 import { VideoCameraIcon, MicrophoneIcon, VideoCameraSlashIcon, PhoneIcon } from "@heroicons/react/20/solid";
 import { useState } from "react";
 import MicrophoneSlashIcon from "../Components/MicrophoneSlashIcon";
 
 export default function Call({classes}: {classes: string}) {
-  const currentSideScreen = useRecoilValue(sideScreenAtom);
+  // const currentSideScreen = useRecoilValue(sideScreenAtom);
   const [isVideo, setIsVideo] = useState<boolean>(false);
   const [isAudio, setIsAudio] = useState<boolean>(false);
   return (
