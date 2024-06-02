@@ -14,6 +14,7 @@ export default function TopProfileView({
   name,
   imageUrl,
   status,
+  isOnline
 }: any) {
   const setIsSideScreenActive = useSetRecoilState(isSideScreenActiveAtom);
   const setCurrentSideScreen =
@@ -38,7 +39,10 @@ export default function TopProfileView({
         )}
         <div className="ml-4">
           <p className="text-xl font-semibold">{name}</p>
-          <p className="opacity-50">{status}</p>
+          <div className="flex gap-1 text-zinc-400">
+            <p>{status}</p>
+            {!isGroup && isOnline && <div className="flex items-center gap-1">(<div className="h-3 w-3 bg-green-500 rounded-full opacity-90"></div><p className="text-green-500 text-sm opacity-90">Online</p>)</div>}
+          </div>
         </div>
       </div>
     </div>

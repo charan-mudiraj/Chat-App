@@ -5,7 +5,7 @@ import {
   isSideScreenActiveAtom,
   sideScreenAtom,
 } from "../atoms/atom";
-import { GroupMember, MessageStatus, UserConnection } from "./types";
+import { GroupMember, MessageStatus, SideScreenSchema, UserConnection } from "./types";
 import { getUniqueID } from "./Functions";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { DB } from "../firestore/firestore";
@@ -37,6 +37,7 @@ export default function ProfileBar({
   id,
   chatId,
   status,
+  isOnline=false,
   lastMsgStatus,
   lastMsg,
   lastUpdatedTime,
@@ -45,7 +46,7 @@ export default function ProfileBar({
   lastMsgStatusForGroup,
 }: any) {
   const [currentSideScreen, setCurrentSideScreen] =
-    useRecoilState(sideScreenAtom);
+    useRecoilState<SideScreenSchema>(sideScreenAtom);
   const setChatMessagesList = useSetRecoilState(chatMessagesAtom);
   const setIsSideScreenActive = useSetRecoilState(isSideScreenActiveAtom);
   const [color, setColor] = useState("rgb(161 161 170)");
@@ -122,6 +123,7 @@ export default function ProfileBar({
         imageUrl: imageUrl,
         userId: isGroup ? "" : id,
         status: status,
+        isOnline: isOnline
     }
   });
 
@@ -171,13 +173,16 @@ export default function ProfileBar({
           <p className="text-sm text-zinc-400">{lastMsg}</p>
         </div>
       </div>
-      {currentSideScreen.listId != chatId &&
-        lastMsgSenderId !=
-          (window.localStorage.getItem("chatapp-user-id") as string) &&
-        lastMsgStatus === MessageStatus.SENT && (
-          <div className="h-3 w-3 bg-primary rounded-full absolute right-4 bottom-3"></div>
-        )}
       <div className="absolute right-4 top-2 text-xs">{lastUpdatedTime}</div>
+      <div className="absolute right-4 bottom-3 flex gap-2">
+        {!isGroup && isOnline && <div className="h-3 w-3 bg-green-500 rounded-full"></div> }
+        {currentSideScreen.listId !== chatId &&
+          lastMsgSenderId !==
+            (window.localStorage.getItem("chatapp-user-id") as string) &&
+          lastMsgStatus === MessageStatus.SENT && (
+            <div className="h-3 w-3 bg-primary rounded-full"></div>
+          )}
+      </div>
     </div>
   );
 }

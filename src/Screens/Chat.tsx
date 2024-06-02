@@ -459,6 +459,7 @@ export default function Chat({ classes }: {classes: string}) {
         name={currentSideScreen.name}
         imageUrl={currentSideScreen.imageUrl}
         status={currentSideScreen.status}
+        isOnline={currentSideScreen.isOnline}
       />
       {isLoading && <Loader classes="absolute" />}
       {list.length == 0 && (

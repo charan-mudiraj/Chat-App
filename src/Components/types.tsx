@@ -65,6 +65,7 @@ export interface User {
   status: string;
   profileImgUrl: string;
   connections: UserConnection[];
+  isOnline: boolean;
 }
 export interface GroupMember {
   userId: string;
@@ -90,4 +91,5 @@ export interface SideScreenSchema {
   status: string;
   onCall: boolean;
   callType?: CallType;
+  isOnline: boolean;
 }

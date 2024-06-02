@@ -8,7 +8,7 @@ import { globalLoaderAtom } from "./atoms/atom";
 import { sideScreenAtom } from "./atoms/atom";
 import { SideScreenSchema } from "./Components/types";
 import { isSideScreenActiveAtom } from "./atoms/atom";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { DB } from "./firestore/firestore";
 import { useEffect, useState } from "react";
 import Call from "./Screens/Call";
@@ -37,6 +37,30 @@ export default function App() {
       const snapshot = await getDoc(doc(DB, "users", userId));
       if (snapshot.exists()) {
         setIsUser(true);
+
+        const setOnlineStatus = async () => {
+          try {
+            await updateDoc(doc(DB, 'users', userId), { isOnline: true });
+          } catch (error) {
+            console.error('Error setting online status:', error);
+          }
+        };
+        const setOfflineStatus = async () => {
+          try {
+            await updateDoc(doc(DB, 'users', userId), { isOnline: false });
+          } catch (error) {
+            console.error('Error setting offline status:', error);
+          }
+        };
+    
+        // Set the user status to 'online' when the component mounts
+        setOnlineStatus();
+        // Set the user status to 'offline' when the component unmounts
+        window.addEventListener("beforeunload", setOfflineStatus);
+        return () => {
+          window.removeEventListener("beforeunload", setOfflineStatus)
+        };
+    
       } else {
         setIsUser(false);
       }

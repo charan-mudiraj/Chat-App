@@ -576,6 +576,10 @@ video {
   bottom: 0.75rem;
 }
 
+.bottom-6 {
+  bottom: 1.5rem;
+}
+
 .left-12 {
   left: 3rem;
 }
@@ -594,14 +598,6 @@ video {
 
 .top-2 {
   top: 0.5rem;
-}
-
-.bottom-5 {
-  bottom: 1.25rem;
-}
-
-.bottom-6 {
-  bottom: 1.5rem;
 }
 
 .z-10 {
@@ -741,6 +737,10 @@ video {
   height: 9rem;
 }
 
+.h-40 {
+  height: 10rem;
+}
+
 .h-6 {
   height: 1.5rem;
 }
@@ -772,10 +772,6 @@ video {
 
 .h-screen {
   height: 100vh;
-}
-
-.h-40 {
-  height: 10rem;
 }
 
 .max-h-\[150px\] {
@@ -834,6 +830,10 @@ video {
 
 .w-screen {
   width: 100vw;
+}
+
+.w-40 {
+  width: 10rem;
 }
 
 .rotate-\[-45deg\] {
@@ -1051,6 +1051,11 @@ video {
   background-color: rgb(33 35 40 / var(--tw-bg-opacity));
 }
 
+.bg-green-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(34 197 94 / var(--tw-bg-opacity));
+}
+
 .bg-primary {
   --tw-bg-opacity: 1;
   background-color: rgb(107 138 253 / var(--tw-bg-opacity));
@@ -1092,11 +1097,6 @@ video {
 
 .bg-zinc-700\/50 {
   background-color: rgb(63 63 70 / 0.5);
-}
-
-.bg-green-500 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(34 197 94 / var(--tw-bg-opacity));
 }
 
 .bg-opacity-20 {
@@ -1277,6 +1277,11 @@ video {
   text-align: center;
 }
 
+.text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
 .text-lg {
   font-size: 1.125rem;
   line-height: 1.75rem;
@@ -1297,16 +1302,6 @@ video {
   line-height: 1rem;
 }
 
-.text-3xl {
-  font-size: 1.875rem;
-  line-height: 2.25rem;
-}
-
-.text-2xl {
-  font-size: 1.5rem;
-  line-height: 2rem;
-}
-
 .font-bold {
   font-weight: 700;
 }
@@ -1315,29 +1310,22 @@ video {
   font-weight: 300;
 }
 
-.font-thin {
-  font-weight: 100;
-}
-
-.font-\[400\] {
-  font-weight: 400;
-}
-
-.font-\[400px\] {
-  font-weight: 400px;
-}
-
-.font-\[800px\] {
-  font-weight: 800px;
-}
-
 .font-semibold {
   font-weight: 600;
+}
+
+.font-thin {
+  font-weight: 100;
 }
 
 .text-black {
   --tw-text-opacity: 1;
   color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+.text-green-500 {
+  --tw-text-opacity: 1;
+  color: rgb(34 197 94 / var(--tw-text-opacity));
 }
 
 .text-white {
@@ -1358,6 +1346,11 @@ video {
 .text-zinc-400 {
   --tw-text-opacity: 1;
   color: rgb(161 161 170 / var(--tw-text-opacity));
+}
+
+.text-zinc-500 {
+  --tw-text-opacity: 1;
+  color: rgb(113 113 122 / var(--tw-text-opacity));
 }
 
 .opacity-30 {
@@ -1382,6 +1375,14 @@ video {
 
 .opacity-90 {
   opacity: 0.9;
+}
+
+.opacity-100 {
+  opacity: 1;
+}
+
+.opacity-80 {
+  opacity: 0.8;
 }
 
 .outline {

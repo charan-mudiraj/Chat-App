@@ -13,8 +13,8 @@ export const defaultSideScreenValue = {
   name: "",
   userId: "",
   status: "",
-  onCall: false
-  
+  onCall: false,
+  isOnline: false
 }
 export const sideScreenAtom = atom<SideScreenSchema>({
   key: "sideScreen",
