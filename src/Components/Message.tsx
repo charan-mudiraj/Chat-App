@@ -7,7 +7,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { DB } from "../firestore/firestore";
 import { useEffect, useState } from "react";
 import fileIcon from "../assets/file.png";
-import { cropPhoto, downlaodFile } from "./Functions";
+import { downlaodFile } from "./Functions";
 
 function ClockIcon() {
   return <img src={clockIcon} className="h-3" />;
@@ -18,11 +18,11 @@ function TickUnseenIcon() {
 function TickSeenIcon() {
   return <img src={seenIcon} className="h-2.5" />;
 }
-function ProfileIcon({ imageUrl, croppedImage }: any) {
+function ProfileIcon({ imageUrl }: any) {
   return (
     <>
-      {imageUrl && croppedImage ? (
-        <img src={croppedImage} className="h-10 ml-1 my-1 mr-2 rounded-full " />
+      {imageUrl ? (
+        <img src={imageUrl} className="h-10 ml-1 my-1 mr-2 rounded-full " />
       ) : (
         <UserCircleIcon className="h-12 mr-1" />
       )}
@@ -121,13 +121,8 @@ export default function Message({
   const justify = isSender ? "justify-end" : "justify-start";
   const roundedTop = isSender ? "rounded-tl-xl" : "rounded-tr-xl";
   const [color, setColor] = useState("white");
-  const [croppedImage, setCroppedImage] = useState("");
+
   useEffect(() => {
-    if (imageUrl) {
-      cropPhoto(imageUrl).then((croppedImgUrl) => {
-        setCroppedImage(croppedImgUrl as string);
-      });
-    }
     if (isGroup && !isSender) {
       getMemberColor(chatId, senderId)
         .then((clr) => {
@@ -142,7 +137,7 @@ export default function Message({
   return (
     <div className={"p-2 flex" + " " + justify}>
       {isGroup && !isSender && (
-        <ProfileIcon imageUrl={imageUrl} croppedImage={croppedImage} />
+        <ProfileIcon imageUrl={imageUrl} />
       )}
       <div
         className={

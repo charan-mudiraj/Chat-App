@@ -23,26 +23,12 @@ import { DB, DBStorage } from "../firestore/firestore";
 import { Group, GroupMember, MessageStatus, User } from "./types";
 import {
   cropPhoto,
+  dataURLToBlob,
   generateRandomColor,
   getCurrentTime,
   getUniqueID,
 } from "./Functions";
 
-function ProfileImage({ imageUrl }: any) {
-  const [croppedImage, setCroppedImage] = useState("");
-  useEffect(() => {
-    cropPhoto(imageUrl).then((croppedImg) => {
-      setCroppedImage(croppedImg as string);
-    });
-  }, []);
-  return (
-    <>
-      {croppedImage && (
-        <img src={croppedImage} className="h-10 mr-2 rounded-full" />
-      )}
-    </>
-  );
-}
 export default function AddGroup({ onClose }: any) {
   const [photo, setPhoto] = useState<File>();
   const [groupname, setGroupname] = useState("");
@@ -59,11 +45,13 @@ export default function AddGroup({ onClose }: any) {
     input.click();
     input.addEventListener("change", async () => {
       const file = input.files[0];
-      setPhoto(file);
       //  get cropped photo
       const bolbUrl = URL.createObjectURL(file);
-      const croppedPhotoSrc = await cropPhoto(bolbUrl);
-      setCroppedPhoto(croppedPhotoSrc as string);
+      const croppedPhotoSrc = await cropPhoto(bolbUrl) as string;
+      const croppedBlobUrl = dataURLToBlob(croppedPhotoSrc);
+      const croppedFile = new File([croppedBlobUrl], file.name, {type: croppedBlobUrl.type})
+      setPhoto(croppedFile);
+      setCroppedPhoto(croppedPhotoSrc);
     });
   };
   const addGroup = async () => {
@@ -222,7 +210,7 @@ export default function AddGroup({ onClose }: any) {
                     />
                     <div className="flex justify-left items-center rounded-xl">
                       {user.profileImgUrl ? (
-                        <ProfileImage imageUrl={user.profileImgUrl} />
+                        <img src={user.profileImgUrl} className="h-10 mr-2 rounded-full" />
                       ) : (
                         <UserCircleIcon className="h-10 pr-1" />
                       )}
