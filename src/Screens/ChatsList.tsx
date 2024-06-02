@@ -20,7 +20,6 @@ import {
   UserConnection,
 } from "../Components/types";
 import Loader from "../Components/Loader";
-import { cropPhoto } from "../Components/Functions";
 
 export default function ChatsList({ classes }: any) {
   const [isAddGroupClicked, addGroupToggle] = useState(false);
@@ -29,7 +28,6 @@ export default function ChatsList({ classes }: any) {
   const [currentUser, setCurrentUser] = useState<User>();
   const [isLoading, setIsLoading] = useState(false);
   const [searchString, setSearchString] = useState("");
-  const [croppedImage, setCroppedImage] = useState("");
 
   useEffect(() => {
     setIsLoading(true);
@@ -83,13 +81,6 @@ export default function ChatsList({ classes }: any) {
       unsubChats();
     };
   }, []);
-  useEffect(() => {
-    if (currentUser) {
-      cropPhoto(currentUser.profileImgUrl).then((croppedImageUrl) => {
-        setCroppedImage(croppedImageUrl as string);
-      });
-    }
-  }, [currentUser]);
   const filteredGroups = () => {
     if (searchString) {
       return groups.filter((g) =>
@@ -117,8 +108,8 @@ export default function ChatsList({ classes }: any) {
       )}
       {isLoading && <Loader classes="absolute" />}
       <div className="flex gap-3 p-3 sticky top-0 bg-secondary">
-        {currentUser && currentUser.profileImgUrl && croppedImage ? (
-          <img src={croppedImage} className="h-14 rounded-full" />
+        {currentUser && currentUser.profileImgUrl? (
+          <img src={currentUser.profileImgUrl} className="h-14 rounded-full" />
         ) : (
           <div>
             <UserCircleIcon className="border-white border-2 h-14 rounded-full" />

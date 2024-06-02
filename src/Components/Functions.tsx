@@ -54,7 +54,7 @@ export const downlaodFile = async (url: string, fileName: string) => {
   }
 };
 
-export const cropPhoto = (imageUrl) => {
+export const cropPhoto = (imageUrl: string) => {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.crossOrigin = "Anonymous"; // Allow loading images from different origins
@@ -78,3 +78,15 @@ export const cropPhoto = (imageUrl) => {
     img.src = imageUrl;
   });
 };
+export function dataURLToBlob(dataURL: string) {
+  const byteString = atob(dataURL.split(',')[1]);
+  const mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0];
+  const arrayBuffer = new ArrayBuffer(byteString.length);
+  const intArray = new Uint8Array(arrayBuffer);
+
+  for (let i = 0; i < byteString.length; i++) {
+    intArray[i] = byteString.charCodeAt(i);
+  }
+
+  return new Blob([arrayBuffer], { type: mimeString });
+}
