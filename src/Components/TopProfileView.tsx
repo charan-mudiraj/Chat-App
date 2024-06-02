@@ -8,8 +8,6 @@ import {
 import { useSetRecoilState } from "recoil";
 import { defaultSideScreenValue, isSideScreenActiveAtom, sideScreenAtom } from "../atoms/atom";
 import { CallType, SideScreenSchema } from "./types";
-import { useEffect, useState } from "react";
-import { cropPhoto } from "./Functions";
 
 export default function TopProfileView({
   isGroup,
