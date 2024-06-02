@@ -37,11 +37,12 @@ export default function TopProfileView({
           <UserCircleIcon className="h-12 border-white border-2 rounded-full" />
         )}
         <div className="ml-4">
-          <p className="font-bold text-xl">{name}</p>
+          <p className="text-xl font-semibold">{name}</p>
           <p className="opacity-50">{status}</p>
         </div>
       </div>
     </div>
+    {!isGroup &&
     <div className="flex gap-6 z-5 pr-8 w-fit">
       <PhoneIcon className="cursor-pointer hover:bg-dark p-2 h-11 rounded-full" onClick={()=>{
         setCurrentSideScreen((curr)=>{
@@ -53,7 +54,7 @@ export default function TopProfileView({
           return {...curr, onCall: true, callType: CallType.Video}
         });
       }} />
-    </div>
+    </div>}
     </div>
   );
 }

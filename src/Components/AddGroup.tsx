@@ -215,7 +215,7 @@ export default function AddGroup({ onClose }: any) {
                         <UserCircleIcon className="h-10 pr-1" />
                       )}
                       <div className="flex flex-col">
-                        <p className="text-lg font-bold text-zinc-200">
+                        <p className="text-lg font-semibold text-zinc-200">
                           {user.name}
                         </p>
                         <p className="text-sm text-zinc-400">{user.status}</p>

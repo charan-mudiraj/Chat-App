@@ -143,7 +143,7 @@ export default function ProfileBar({
         <UserCircleIcon className="h-12 mr-1 my-2 ml-2 border-white border-2 rounded-full" />
       )}
       <div className="flex flex-col">
-        <p className="text-lg font-bold text-zinc-200">{name}</p>
+        <p className="text-lg font-semibold text-zinc-200">{name}</p>
         <div className="flex gap-1 items-center">
           {lastMsgSenderId ==
             (window.localStorage.getItem("chatapp-user-id") as string) &&
