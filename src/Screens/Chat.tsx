@@ -74,7 +74,7 @@ function UnknownFileGraphic({ ext, size, name }: any) {
     </>
   );
 }
-export default function Chat({ classes }: any) {
+export default function Chat({ classes }: {classes: string}) {
   const [list, setList] = useRecoilState<Message[]>(chatMessagesAtom);
   const currentSideScreen = useRecoilValue<SideScreenSchema>(sideScreenAtom);
   const [currentUser, setCurrentUser] = useState<User>();

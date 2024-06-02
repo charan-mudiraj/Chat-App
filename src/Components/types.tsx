@@ -77,6 +77,10 @@ export interface Group extends LastMessage {
   groupImgUrl: string;
   members: GroupMember[];
 }
+export enum CallType{
+  Video = "video",
+  Audio = "audio"
+}
 export interface SideScreenSchema {
   listId: string;
   isGroup: boolean;
@@ -84,4 +88,6 @@ export interface SideScreenSchema {
   name: string;
   userId?: string;
   status: string;
+  onCall: boolean;
+  callType?: CallType;
 }

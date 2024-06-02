@@ -4,7 +4,7 @@ import linkedinIcon from "../assets/linkedin-icon.png";
 import githubIcon from "../assets/github-icon.png";
 import gmailIcon from "../assets/gmail-icon.png";
 
-export default function About({ classes }: any) {
+export default function About({ classes }: {classes: string}) {
   return (
     <div
       className={

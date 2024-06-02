@@ -1,21 +1,24 @@
 import { atom } from "recoil";
-import { Message } from "../Components/types";
-import { SideScreenSchema } from "../Components/types";
+import { SideScreenSchema, Message } from "../Components/types";
 
 export const globalLoaderAtom = atom({
   key: "globalLoader",
   default: false,
 });
+
+export const defaultSideScreenValue = {
+  listId: "",
+  isGroup: false,
+  imageUrl: "",
+  name: "",
+  userId: "",
+  status: "",
+  onCall: false
+  
+}
 export const sideScreenAtom = atom<SideScreenSchema>({
   key: "sideScreen",
-  default: {
-    listId: "",
-    isGroup: false,
-    imageUrl: "",
-    name: "",
-    userId: "",
-    status: "",
-  },
+  default: defaultSideScreenValue,
 });
 export const chatMessagesAtom = atom<Message[]>({
   key: "chatMessages",

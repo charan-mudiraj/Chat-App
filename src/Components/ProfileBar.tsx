@@ -120,22 +120,27 @@ export default function ProfileBar({
       });
     }
     setChatMessagesList([]);
-    setCurrentSideScreen({
-      listId: chatId,
-      isGroup: isGroup,
-      name: name,
-      imageUrl: imageUrl,
-      userId: isGroup ? "" : id,
-      status: status,
-    });
+    setCurrentSideScreen(curr => {
+      return {
+        ...curr,
+        listId: chatId,
+        isGroup: isGroup,
+        name: name,
+        imageUrl: imageUrl,
+        userId: isGroup ? "" : id,
+        status: status,
+    }
+  });
 
     //for mobile view
     setIsSideScreenActive(true);
   };
   return (
     <div
-      className="flex gap-3 justify-left items-center hover:bg-secondary hover:cursor-pointer m-3 rounded-xl relative"
-      onClick={openChat}
+      className={`flex gap-3 justify-left items-center hover:bg-secondary m-3 rounded-xl relative ${currentSideScreen.onCall ? "cursor-not-allowed": "cursor-pointer"}`}
+      onClick={()=>{
+        if(!currentSideScreen.onCall) openChat();
+      }}
     >
       {imageUrl && croppedImage ? (
         <img src={croppedImage} className="h-12 mr-1 my-2 ml-3 rounded-full" />

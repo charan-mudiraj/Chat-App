@@ -11,6 +11,7 @@ import { isSideScreenActiveAtom } from "./atoms/atom";
 import { doc, getDoc } from "firebase/firestore";
 import { DB } from "./firestore/firestore";
 import { useEffect, useState } from "react";
+import Call from "./Screens/Call";
 
 function SideScreen({ Screen }: any) {
   return (
@@ -59,7 +60,8 @@ export default function App() {
 
         <SideScreen
           Screen={
-            currentSideScreen.listId && isSideScreenActive ? (
+            isSideScreenActive ? (
+              currentSideScreen.onCall ? <Call classes="md:flex h-screen" /> :
               <Chat classes="md:flex h-screen" />
             ) : (
               <About classes="md:flex h-screen" />
