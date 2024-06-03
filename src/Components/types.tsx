@@ -59,6 +59,12 @@ export interface UserConnection extends LastMessage {
   chatId: string;
   lastMsgStatus: MessageStatus;
 }
+export interface IncommingCall{
+  isIncomming: boolean;
+  callType: CallType;
+  callerId: string;
+  roomId: string;
+}
 export interface User {
   id: string;
   name: string;
@@ -66,6 +72,7 @@ export interface User {
   profileImgUrl: string;
   connections: UserConnection[];
   isOnline: boolean;
+  incommingCall?: IncommingCall
 }
 export interface GroupMember {
   userId: string;

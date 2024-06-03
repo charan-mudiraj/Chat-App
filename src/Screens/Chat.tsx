@@ -454,13 +454,7 @@ export default function Chat({ classes }: {classes: string}) {
         classes
       }
     >
-      <TopProfileView
-        isGroup={currentSideScreen.isGroup}
-        name={currentSideScreen.name}
-        imageUrl={currentSideScreen.imageUrl}
-        status={currentSideScreen.status}
-        isOnline={currentSideScreen.isOnline}
-      />
+      <TopProfileView />
       {isLoading && <Loader classes="absolute" />}
       {list.length == 0 && (
         <div className="text-lg opacity-30 flex items-end justify-center h-full">

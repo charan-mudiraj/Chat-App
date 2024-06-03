@@ -5,20 +5,34 @@ import {
   PhoneIcon,
   VideoCameraIcon
 } from "@heroicons/react/20/solid";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { defaultSideScreenValue, isSideScreenActiveAtom, sideScreenAtom } from "../atoms/atom";
-import { CallType, SideScreenSchema } from "./types";
+import { CallType, SideScreenSchema, User } from "./types";
+import { useEffect, useState } from "react";
+import { doc, onSnapshot } from "firebase/firestore";
+import { DB } from "../firestore/firestore";
 
-export default function TopProfileView({
-  isGroup,
-  name,
-  imageUrl,
-  status,
-  isOnline
-}: any) {
+export default function TopProfileView() {
   const setIsSideScreenActive = useSetRecoilState(isSideScreenActiveAtom);
-  const setCurrentSideScreen =
-    useSetRecoilState<SideScreenSchema>(sideScreenAtom);
+  const [currentSideScreen, setCurrentSideScreen] =
+    useRecoilState<SideScreenSchema>(sideScreenAtom);
+  const [isOnline, setIsOnline] = useState<boolean>(false);
+
+  useEffect(()=>{
+    let unsubRecipient;
+    (async ()=>{
+      unsubRecipient = onSnapshot(doc(DB, "users", currentSideScreen.userId), (doc)=>{
+        if(doc.exists()){
+          const recipient = doc.data() as User;
+          setIsOnline(recipient.isOnline);
+        }
+      })
+    })();
+    return ()=>{
+      if(unsubRecipient) unsubRecipient();
+    }
+  }, []);
+  
   return (
     <div className="bg-secondary flex w-full items-center">
     <div className="flex w-full sticky top-0 h-fit pl-1 py-2 items-center">
@@ -30,23 +44,23 @@ export default function TopProfileView({
         }}
       />
       <div className="flex items-center pl-0 md:pl-5 h-full absolute left-12 md:relative md:left-0">
-        {imageUrl ? (
-          <img src={imageUrl} className="h-12 rounded-full" />
-        ) : isGroup ? (
+        {currentSideScreen.imageUrl ? (
+          <img src={currentSideScreen.imageUrl} className="h-12 rounded-full" />
+        ) : currentSideScreen.isGroup ? (
           <UserGroupIcon className="h-12 border-white border-2 rounded-full p-1" />
         ) : (
           <UserCircleIcon className="h-12 border-white border-2 rounded-full" />
         )}
         <div className="ml-4">
-          <p className="text-xl font-semibold">{name}</p>
+          <p className="text-xl font-semibold">{currentSideScreen.name}</p>
           <div className="flex gap-1 text-zinc-400">
-            <p>{status}</p>
-            {!isGroup && isOnline && <div className="flex items-center gap-1">(<div className="h-3 w-3 bg-green-500 rounded-full opacity-90"></div><p className="text-green-500 text-sm opacity-90">Online</p>)</div>}
+            <p>{currentSideScreen.status}</p>
+            {!currentSideScreen.isGroup && isOnline && <div className="flex items-center gap-1">(<div className="h-3 w-3 bg-green-500 rounded-full opacity-90"></div><p className="text-green-500 text-sm opacity-90">Online</p>)</div>}
           </div>
         </div>
       </div>
     </div>
-    {!isGroup &&
+    {!currentSideScreen.isGroup &&
     <div className="flex gap-6 z-5 pr-8 w-fit">
       <PhoneIcon className="cursor-pointer hover:bg-dark p-2 h-11 rounded-full" onClick={()=>{
         setCurrentSideScreen((curr)=>{
