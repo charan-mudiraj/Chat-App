@@ -7,7 +7,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { DB } from "../firestore/firestore";
 import { useEffect, useState } from "react";
 import fileIcon from "../assets/file.png";
-import { downlaodFile } from "./Functions";
+import { downlaodFile } from "./Utils";
 
 function ClockIcon() {
   return <img src={clockIcon} className="h-3" />;

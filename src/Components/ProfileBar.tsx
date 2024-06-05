@@ -6,7 +6,7 @@ import {
   sideScreenAtom,
 } from "../atoms/atom";
 import { GroupMember, MessageStatus, SideScreenSchema, UserConnection } from "./types";
-import { getUniqueID } from "./Functions";
+import { getUniqueID } from "./Utils";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { DB } from "../firestore/firestore";
 import { useEffect, useState } from "react";

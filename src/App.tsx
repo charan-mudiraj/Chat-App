@@ -92,7 +92,6 @@ export default function App() {
             (isSideScreenActive ? "hidden md:block" : "")
           }
         />
-
         <SideScreen
           Screen={
             isSideScreenActive ? (

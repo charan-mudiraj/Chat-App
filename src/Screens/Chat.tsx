@@ -19,7 +19,7 @@ import {
   updateDoc,
   getDoc,
 } from "firebase/firestore";
-import { getCurrentTime, getUniqueID } from "../Components/Functions";
+import { getCurrentTime, getUniqueID } from "../Components/Utils";
 import { DB, DBStorage } from "../firestore/firestore";
 import sentSound from "../assets/sent.mp3";
 // import receivedSound from "../assets/received.mp3";
@@ -457,7 +457,7 @@ export default function Chat({ classes }: {classes: string}) {
       <TopProfileView />
       {isLoading && <Loader classes="absolute" />}
       {list.length == 0 && (
-        <div className="text-lg opacity-30 flex items-end justify-center h-full">
+        <div className="text-lg opacity-30 flex items-end justify-center h-full select-none">
           <p>No messages to show</p>
         </div>
       )}

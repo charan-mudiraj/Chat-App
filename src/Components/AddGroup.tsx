@@ -27,7 +27,7 @@ import {
   generateRandomColor,
   getCurrentTime,
   getUniqueID,
-} from "./Functions";
+} from "./Utils";
 
 export default function AddGroup({ onClose }: any) {
   const [photo, setPhoto] = useState<File>();

@@ -61,6 +61,8 @@ export interface UserConnection extends LastMessage {
 }
 export interface IncommingCall{
   isIncomming: boolean;
+  isRejected: boolean;
+  isAccepted: boolean;
   callType: CallType;
   callerId: string;
   roomId: string;
@@ -98,5 +100,18 @@ export interface SideScreenSchema {
   status: string;
   onCall: boolean;
   callType?: CallType;
+  isCaller?: boolean; // true for caller and false for reciever
   isOnline: boolean;
+}
+export interface Room {
+  id: string,
+  onCall: boolean,
+  offer: {
+    type: RTCSdpType,
+    sdp: string
+  },
+  answer?: {
+    type: RTCSdpType,
+    sdp: string
+  }
 }

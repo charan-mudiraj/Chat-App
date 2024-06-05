@@ -64,12 +64,12 @@ export default function TopProfileView() {
     <div className="flex gap-6 z-5 pr-8 w-fit">
       <PhoneIcon className="cursor-pointer hover:bg-dark p-2 h-11 rounded-full" onClick={()=>{
         setCurrentSideScreen((curr)=>{
-          return {...curr, onCall: true, callType: CallType.Audio}
+          return {...curr, onCall: true, callType: CallType.Audio, isCaller: true}
         });
       }} />
       <VideoCameraIcon className="cursor-pointer h-11 p-2 rounded-full hover:bg-dark" onClick={()=>{
         setCurrentSideScreen((curr)=>{
-          return {...curr, onCall: true, callType: CallType.Video}
+          return {...curr, onCall: true, callType: CallType.Video, isCaller: true}
         });
       }} />
     </div>}
