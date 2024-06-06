@@ -65,8 +65,10 @@ export default function App() {
         setOnlineStatus();
         // Set the user status to 'offline' when the component unmounts
         window.addEventListener("beforeunload", setOfflineStatus);
+        window.addEventListener("offline", setOfflineStatus)
         return () => {
           window.removeEventListener("beforeunload", setOfflineStatus)
+          window.removeEventListener("offline", setOfflineStatus);
         };
     
       } else {

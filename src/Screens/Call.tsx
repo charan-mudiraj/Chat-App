@@ -6,11 +6,11 @@ import { CallType, IncommingCall, Room, SideScreenSchema, User } from "../Compon
 import { isSideScreenActiveAtom, sideScreenAtom } from "../atoms/atom";
 import { collection, doc, getDoc, onSnapshot, Unsubscribe, updateDoc } from "firebase/firestore";
 import { DB } from "../firestore/firestore";
-import { createRoom, deleteRoom, joinRoom } from "../Components/Utils";
+import {createRoom, deleteRoom, joinRoom } from "../Components/Utils";
 
 export default function Call({classes}: {classes: string}) {
-  const [isVideo, setIsVideo] = useState<boolean>(false);
-  const [isAudio, setIsAudio] = useState<boolean>(false);
+  const [isVideo, setIsVideo] = useState<boolean>(true);
+  const [isAudio, setIsAudio] = useState<boolean>(true);
   const [currentSideScreen, setCurrentSideScreen] = useRecoilState<SideScreenSchema>(sideScreenAtom);
   const setIsSideScreenActive = useSetRecoilState<boolean>(isSideScreenActiveAtom);
   const [callStatus, setCallStatus] = useState<string>(currentSideScreen.isCaller ? "Calling...": "On Call");
@@ -18,10 +18,12 @@ export default function Call({classes}: {classes: string}) {
   const remoteMediaRef = useRef<HTMLVideoElement | null>(null);
   const [roomId, setRoomId] = useState<string>("");
   const [onCall, setOnCall] = useState<Boolean>(currentSideScreen.isCaller ? false : true);
-  const callRingTimeLimit = 30000;
+  const callRingTimeLimit = 30000000;
   let peerConnection: RTCPeerConnection = null;
   let localStream: MediaStream = null;
   let remoteStream: MediaStream = null;
+  const [videoTrack, setVideoTrack] = useState(null);
+  const [audioTrack, setAudioTrack] = useState(null);
 
   const endCall = async ()=>{
     setCallStatus("Ending Call...");
@@ -90,6 +92,7 @@ export default function Call({classes}: {classes: string}) {
 
     (async ()=>{
       try{
+        await getMedia();
         // get online status of recipient
         const snapshot = await getDoc(doc(DB, "users", currentSideScreen.userId));
         if(snapshot.exists()){
@@ -115,9 +118,10 @@ export default function Call({classes}: {classes: string}) {
                   setOnCall(true);
                   setCallStatus("On Call");
                   // create room
-                  await getMedia();
                   const newRoomRef = doc(collection(DB, "rooms"));
-                  createRoom(newRoomRef, peerConnection, localStream, remoteStream);
+                  const tracks = await createRoom(newRoomRef, peerConnection, localStream, remoteStream);
+                  setVideoTrack(tracks.videoTrack);
+                  setAudioTrack(tracks.audioTrack)
                   await updateDoc(doc(DB, "users", currentSideScreen.userId), {
                     incommingCall: {roomId: newRoomRef.id}
                   });
@@ -177,8 +181,10 @@ export default function Call({classes}: {classes: string}) {
         const currentUser = snapshot.data() as User;
         if(currentUser.incommingCall.roomId){
           setRoomId(currentUser.incommingCall.roomId);
-          getMedia().then(()=>{
-            joinRoom(currentUser.incommingCall.roomId, peerConnection, localStream, remoteStream);
+          getMedia().then(async ()=>{
+            const tracks = await joinRoom(currentUser.incommingCall.roomId, peerConnection, localStream, remoteStream);
+            setVideoTrack(tracks.videoTrack);
+            setAudioTrack(tracks.audioTrack);
             // listen to "onCall" in the room, to end the call when caller makes it false
             unsubRoom = onSnapshot(doc(DB, "rooms", currentUser.incommingCall.roomId), (snapshot)=>{
               if(snapshot.exists()){
@@ -205,23 +211,25 @@ export default function Call({classes}: {classes: string}) {
 
   return (
     <div className={"flex flex-col w-screen chat-pattern bg-repeat bg-contain relative" + " " + classes}>
-        <div className="flex flex-col items-center justify-center gap-2 h-full pb-[30px]">
-      {currentSideScreen.imageUrl ? (
-          <img src={currentSideScreen.imageUrl} className="h-40 rounded-full" />
-        ) : (
-          <UserCircleIcon className="h-40 border-white border-2 rounded-full" />
-        )}
-        <div className="flex flex-col gap-3 items-center">
-          <p className="text-2xl font-semibold text-center">{currentSideScreen.name}</p>
-          <div>
-            {callStatus}
-          </div>
-        </div>
+        <div className="flex flex-col items-center justify-center gap-2 h-full w-full relative">
+          {!(currentSideScreen.callType === CallType.Video && onCall) && 
+          (<>
+            {currentSideScreen.imageUrl ? 
+              (<img src={currentSideScreen.imageUrl} className="h-40 rounded-full" />) :
+              (<UserCircleIcon className="h-[28%] border-white border-2 rounded-full" />)}
+              <div className="flex flex-col gap-3 items-center">
+                <p className="text-2xl font-semibold text-center">{currentSideScreen.name}</p>
+                <div>
+                  {callStatus}
+                </div>
+              </div>
+            </>
+          )}
         {currentSideScreen.callType === CallType.Video &&
-          <div>
-            <video className="h-[30%] w-max rounded-lg mt-5" ref={localMediaRef} autoPlay muted playsInline />
-            <video className="h-[30%] w-max rounded-lg mt-5" ref={remoteMediaRef} autoPlay playsInline />
-          </div>
+          <>
+            <video className={`w-auto rounded-lg mt-5 mb-10 ${onCall ? "absolute right-[20px] md:bottom-[20px] bottom-[105px] md:block hidden h-[18%]" : "h-[30%]"}`} ref={localMediaRef} autoPlay muted playsInline />
+            <video className={`h-full w-max rounded-lg md:m-3 ${!onCall && "hidden"}`} ref={remoteMediaRef} autoPlay playsInline />
+          </>
         }
         {currentSideScreen.callType === CallType.Audio && 
           <audio className="hidden" ref={localMediaRef} autoPlay></audio>
@@ -231,7 +239,14 @@ export default function Call({classes}: {classes: string}) {
           {currentSideScreen.callType === CallType.Video &&
             <button className="hover:bg-zinc-700 hover:bg-opacity-50 p-3 rounded-full h-fit"
               onClick={()=>{
-                setIsVideo(curr=>!curr);
+                if(!videoTrack) return;
+                if(isVideo){
+                  videoTrack.enabled = false;
+                  setIsVideo(false)
+                }else{
+                  videoTrack.enabled = true;
+                  setIsVideo(true);
+                }
               }}
             >
               {!isVideo ? <VideoCameraSlashIcon className="h-8" /> : <VideoCameraIcon className="h-8" />}
@@ -248,9 +263,20 @@ export default function Call({classes}: {classes: string}) {
               endCall();
             }
           }}><PhoneIcon className="h-8 rotate-[135deg]"/></button>
-          <button className="hover:bg-zinc-700 hover:bg-opacity-50 p-3 rounded-full h-fit" onClick={()=>{
-            setIsAudio(curr=>!curr);
-          }}>{!isAudio ? <MicrophoneSlashIcon className="h-8" />:<MicrophoneIcon className="h-8" />}</button>
+          <button className="hover:bg-zinc-700 hover:bg-opacity-50 p-3 rounded-full h-fit"
+          onClick={()=>{
+            if(!audioTrack) return;
+            if(isAudio){
+              audioTrack.enabled = false;
+              setIsAudio(false)
+            }else{
+              audioTrack.enabled = true;
+              setIsAudio(true);
+            }
+          }}
+          >
+          {!isAudio ? <MicrophoneSlashIcon className="h-8" />:<MicrophoneIcon className="h-8" />}
+          </button>
         </div>
     </div>
   )

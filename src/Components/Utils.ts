@@ -137,11 +137,14 @@ export function registerPeerConnectionListeners(peerConnection) {
 }
 
 export const createRoom = async (newRoomRef, peerConnection, localStream, remoteStream)=>{
+  let videoTrack, audioTrack;
   // console.log('Create PeerConnection with configuration: ', connectionConfig);
   peerConnection = new RTCPeerConnection(connectionConfig);
   // registerPeerConnectionListeners(peerConnection);
   localStream.getTracks().forEach(track => {
-    peerConnection.addTrack(track, localStream)
+    peerConnection.addTrack(track, localStream);
+    if(track.kind === "video") videoTrack = track;
+    if(track.kind === "audio") audioTrack = track;
   });
 
   // collect the ICE candidates
@@ -195,9 +198,11 @@ export const createRoom = async (newRoomRef, peerConnection, localStream, remote
       }
     })
   })
+  return {videoTrack: videoTrack, audioTrack: audioTrack}
 }
 
 export const joinRoom = async (roomId, peerConnection, localStream, remoteStream) => {
+  let videoTrack, audioTrack;
   const roomRef = doc(DB, "rooms", roomId)
   const roomDoc = await getDoc(roomRef);
   // console.log('Got room:', roomDoc.exists());
@@ -208,6 +213,8 @@ export const joinRoom = async (roomId, peerConnection, localStream, remoteStream
     // console.log(localStream)
     localStream.getTracks().forEach(track => {
       peerConnection.addTrack(track, localStream);
+      if(track.kind === "video") videoTrack = track;
+      if(track.kind === "audio") audioTrack = track;
     });
 
     // collecting ICE candidates
@@ -255,6 +262,7 @@ export const joinRoom = async (roomId, peerConnection, localStream, remoteStream
       })
     })
   }
+  return {videoTrack: videoTrack, audioTrack: audioTrack};
 }
 export const deleteRoom = async (roomId) => {
   if (roomId) {

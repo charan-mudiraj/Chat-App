@@ -4,7 +4,7 @@ import { doc, getDoc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { DB } from '../firestore/firestore';
 import { PhoneIcon, UserCircleIcon } from '@heroicons/react/20/solid';
 import { useSetRecoilState } from 'recoil';
-import { globalLoaderAtom, isSideScreenActiveAtom, sideScreenAtom } from '../atoms/atom';
+import { defaultSideScreenValue, globalLoaderAtom, isSideScreenActiveAtom, sideScreenAtom } from '../atoms/atom';
 
 function IncommingCall({call}: {call: IncommingCallType}) {
     const [caller, setCaller] = useState<User | null>(null);
@@ -33,14 +33,16 @@ function IncommingCall({call}: {call: IncommingCallType}) {
     }
     const acceptCall = async ()=>{
       setIsLoading(true);
+      setIsSideScreenActive(false);
       await updateDoc(doc(DB, "users", window.localStorage.getItem("chatapp-user-id")), {incommingCall: {isAccepted: true}});
-      setCurrentSideScreen((curr)=>{
-        return{
-          ...curr,
-          onCall: true,
-          callType: currentUser.incommingCall.callType,
-          isCaller: false
-        }
+      setCurrentSideScreen({
+        ...defaultSideScreenValue,
+        userId: caller.id,
+        name: caller.name,
+        imageUrl: caller.profileImgUrl,
+        onCall: true,
+        callType: currentUser.incommingCall.callType,
+        isCaller: false
       });
       onSnapshot(doc(DB, "users", currentUser.id), (snapshot)=>{
         if(snapshot.exists()){
