@@ -59,12 +59,22 @@ export interface UserConnection extends LastMessage {
   chatId: string;
   lastMsgStatus: MessageStatus;
 }
+export interface IncommingCall{
+  isIncomming: boolean;
+  isRejected: boolean;
+  isAccepted: boolean;
+  callType: CallType;
+  callerId: string;
+  roomId: string;
+}
 export interface User {
   id: string;
   name: string;
   status: string;
   profileImgUrl: string;
   connections: UserConnection[];
+  isOnline: boolean;
+  incommingCall?: IncommingCall
 }
 export interface GroupMember {
   userId: string;
@@ -77,6 +87,10 @@ export interface Group extends LastMessage {
   groupImgUrl: string;
   members: GroupMember[];
 }
+export enum CallType{
+  Video = "video",
+  Audio = "audio"
+}
 export interface SideScreenSchema {
   listId: string;
   isGroup: boolean;
@@ -84,4 +98,20 @@ export interface SideScreenSchema {
   name: string;
   userId?: string;
   status: string;
+  onCall: boolean;
+  callType?: CallType;
+  isCaller?: boolean; // true for caller and false for reciever
+  isOnline: boolean;
+}
+export interface Room {
+  id: string,
+  onCall: boolean,
+  offer: {
+    type: RTCSdpType,
+    sdp: string
+  },
+  answer?: {
+    type: RTCSdpType,
+    sdp: string
+  }
 }

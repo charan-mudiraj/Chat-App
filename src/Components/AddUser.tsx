@@ -6,7 +6,7 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useSetRecoilState } from "recoil";
 import { globalLoaderAtom } from "../atoms/atom";
 import { User } from "./types";
-import { cropPhoto, dataURLToBlob } from "./Functions";
+import { cropPhoto, dataURLToBlob } from "./Utils";
 import {
   collection,
   doc,
@@ -85,6 +85,7 @@ export default function AddUser() {
         status: status,
         profileImgUrl: photoUrl,
         connections: [],
+        isOnline: false,
       };
       // upload the user data
       await setDoc(newDocRef, newUser);

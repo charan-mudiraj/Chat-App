@@ -5,8 +5,8 @@ import {
   isSideScreenActiveAtom,
   sideScreenAtom,
 } from "../atoms/atom";
-import { GroupMember, MessageStatus, UserConnection } from "./types";
-import { getUniqueID } from "./Functions";
+import { GroupMember, MessageStatus, SideScreenSchema, UserConnection } from "./types";
+import { getUniqueID } from "./Utils";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { DB } from "../firestore/firestore";
 import { useEffect, useState } from "react";
@@ -37,6 +37,7 @@ export default function ProfileBar({
   id,
   chatId,
   status,
+  isOnline=false,
   lastMsgStatus,
   lastMsg,
   lastUpdatedTime,
@@ -45,7 +46,7 @@ export default function ProfileBar({
   lastMsgStatusForGroup,
 }: any) {
   const [currentSideScreen, setCurrentSideScreen] =
-    useRecoilState(sideScreenAtom);
+    useRecoilState<SideScreenSchema>(sideScreenAtom);
   const setChatMessagesList = useSetRecoilState(chatMessagesAtom);
   const setIsSideScreenActive = useSetRecoilState(isSideScreenActiveAtom);
   const [color, setColor] = useState("rgb(161 161 170)");
@@ -113,22 +114,28 @@ export default function ProfileBar({
       });
     }
     setChatMessagesList([]);
-    setCurrentSideScreen({
-      listId: chatId,
-      isGroup: isGroup,
-      name: name,
-      imageUrl: imageUrl,
-      userId: isGroup ? "" : id,
-      status: status,
-    });
+    setCurrentSideScreen(curr => {
+      return {
+        ...curr,
+        listId: chatId,
+        isGroup: isGroup,
+        name: name,
+        imageUrl: imageUrl,
+        userId: isGroup ? "" : id,
+        status: status,
+        isOnline: isOnline
+    }
+  });
 
     //for mobile view
     setIsSideScreenActive(true);
   };
   return (
     <div
-      className="flex gap-3 justify-left items-center hover:bg-secondary hover:cursor-pointer m-3 rounded-xl relative"
-      onClick={openChat}
+      className={`flex gap-3 justify-left items-center hover:bg-secondary m-3 rounded-xl relative ${currentSideScreen.onCall ? "cursor-not-allowed": "cursor-pointer"}`}
+      onClick={()=>{
+        if(!currentSideScreen.onCall) openChat();
+      }}
     >
       {imageUrl ? (
         <img src={imageUrl} className="h-12 mr-1 my-2 ml-3 rounded-full" />
@@ -138,7 +145,7 @@ export default function ProfileBar({
         <UserCircleIcon className="h-12 mr-1 my-2 ml-2 border-white border-2 rounded-full" />
       )}
       <div className="flex flex-col">
-        <p className="text-lg font-bold text-zinc-200">{name}</p>
+        <p className="text-lg font-semibold text-zinc-200">{name}</p>
         <div className="flex gap-1 items-center">
           {lastMsgSenderId ==
             (window.localStorage.getItem("chatapp-user-id") as string) &&
@@ -166,13 +173,16 @@ export default function ProfileBar({
           <p className="text-sm text-zinc-400">{lastMsg}</p>
         </div>
       </div>
-      {currentSideScreen.listId != chatId &&
-        lastMsgSenderId !=
-          (window.localStorage.getItem("chatapp-user-id") as string) &&
-        lastMsgStatus === MessageStatus.SENT && (
-          <div className="h-3 w-3 bg-primary rounded-full absolute right-4 bottom-3"></div>
-        )}
       <div className="absolute right-4 top-2 text-xs">{lastUpdatedTime}</div>
+      <div className="absolute right-4 bottom-3 flex gap-2">
+        {!isGroup && isOnline && <div className="h-3 w-3 bg-green-500 rounded-full"></div> }
+        {currentSideScreen.listId !== chatId &&
+          lastMsgSenderId !==
+            (window.localStorage.getItem("chatapp-user-id") as string) &&
+          lastMsgStatus === MessageStatus.SENT && (
+            <div className="h-3 w-3 bg-primary rounded-full"></div>
+          )}
+      </div>
     </div>
   );
 }

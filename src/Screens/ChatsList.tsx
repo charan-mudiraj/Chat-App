@@ -192,6 +192,7 @@ export default function ChatsList({ classes }: any) {
                 imageUrl={u.profileImgUrl}
                 name={u.name}
                 status={u.status}
+                isOnline={u.isOnline}
                 lastMsgStatus={currentUser.connections[index].lastMsgStatus}
                 lastMsg={currentUser.connections[index].lastMessage}
                 lastUpdatedTime={currentUser.connections[index].lastUpdatedTime}
@@ -211,6 +212,7 @@ export default function ChatsList({ classes }: any) {
               imageUrl={u.profileImgUrl}
               name={u.name}
               status={u.status}
+              isOnline={u.isOnline}
               lastMsgStatus={MessageStatus.SEEN}
               lastMsg={""}
               lastUpdatedTime={""}

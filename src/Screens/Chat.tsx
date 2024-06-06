@@ -19,7 +19,7 @@ import {
   updateDoc,
   getDoc,
 } from "firebase/firestore";
-import { getCurrentTime, getUniqueID } from "../Components/Functions";
+import { getCurrentTime, getUniqueID } from "../Components/Utils";
 import { DB, DBStorage } from "../firestore/firestore";
 import sentSound from "../assets/sent.mp3";
 // import receivedSound from "../assets/received.mp3";
@@ -74,7 +74,7 @@ function UnknownFileGraphic({ ext, size, name }: any) {
     </>
   );
 }
-export default function Chat({ classes }: any) {
+export default function Chat({ classes }: {classes: string}) {
   const [list, setList] = useRecoilState<Message[]>(chatMessagesAtom);
   const currentSideScreen = useRecoilValue<SideScreenSchema>(sideScreenAtom);
   const [currentUser, setCurrentUser] = useState<User>();
@@ -454,15 +454,10 @@ export default function Chat({ classes }: any) {
         classes
       }
     >
-      <TopProfileView
-        isGroup={currentSideScreen.isGroup}
-        name={currentSideScreen.name}
-        imageUrl={currentSideScreen.imageUrl}
-        status={currentSideScreen.status}
-      />
+      <TopProfileView />
       {isLoading && <Loader classes="absolute" />}
       {list.length == 0 && (
-        <div className="text-lg opacity-30 flex items-end justify-center h-full">
+        <div className="text-lg opacity-30 flex items-end justify-center h-full select-none">
           <p>No messages to show</p>
         </div>
       )}
