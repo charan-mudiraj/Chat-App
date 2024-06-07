@@ -38,6 +38,7 @@ A Chatting Web Application similar to [WhatsApp](https://web.whatsapp.com/) wher
 ![](./views/1.png)
 
 <!-- (update this) -->
+
 2. Personal Chat Screen
 
 ![](./views/2.png)
@@ -50,12 +51,14 @@ A Chatting Web Application similar to [WhatsApp](https://web.whatsapp.com/) wher
 
 ![](./views/4.png)
 
-5. Video Call Screen
+5. Video Call Screens
+
+![](./views/9.png)
+![](./views/10.png)
+
+6. Audio Call Screens
 
 ![](./views/7.png)
-
-6. Audio Call Screen
-
 ![](./views/8.png)
 
 7. Mobile View Chat Screen
@@ -65,3 +68,7 @@ A Chatting Web Application similar to [WhatsApp](https://web.whatsapp.com/) wher
 8. Mobile View Chats List Screen
 
 ![](./views/6.png)
+
+9. Mobile View Voice Call
+
+![](./views/11.png)
