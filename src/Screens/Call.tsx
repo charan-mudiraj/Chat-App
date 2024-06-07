@@ -324,7 +324,15 @@ export default function Call({ classes }: { classes: string }) {
           </>
         )}
         {currentSideScreen.callType === CallType.Audio && (
-          <audio className="hidden" ref={remoteMediaRef} autoPlay></audio>
+          <>
+            <audio
+              className="hidden"
+              ref={localMediaRef}
+              muted
+              autoPlay
+            ></audio>
+            <audio className="hidden" ref={remoteMediaRef} autoPlay></audio>
+          </>
         )}
       </div>
       <div className="flex justify-center gap-6 absolute bottom-6 w-full">
