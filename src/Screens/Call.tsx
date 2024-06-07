@@ -227,7 +227,7 @@ export default function Call({classes}: {classes: string}) {
           )}
         {currentSideScreen.callType === CallType.Video &&
           <>
-            <video className={`w-auto rounded-lg mt-5 mb-10 ${onCall ? "absolute right-[20px] md:bottom-[20px] bottom-[105px] md:block hidden h-[18%]" : "h-[30%]"}`} ref={localMediaRef} autoPlay muted playsInline />
+            <video className={`w-auto rounded-lg mt-5 ${onCall ? "absolute right-[20px] sm:bottom-[20px] sm:top-auto top-0 h-[18%]" : "h-[30%] mb-10"}`} ref={localMediaRef} autoPlay muted playsInline />
             <video className={`h-full w-max rounded-lg md:m-3 ${!onCall && "hidden"}`} ref={remoteMediaRef} autoPlay playsInline />
           </>
         }
